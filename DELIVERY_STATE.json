@@ -1,13 +1,13 @@
 {
-  "phase": "B",
-  "status": "rules_rbac_done_first_loop_green",
-  "updated_at": "2026-09-26T06:18:00Z",
+  "phase": "E_local",
+  "status": "local_ops_console_ready_platform_blocked",
+  "updated_at": "2026-09-26T06:20:00Z",
   "project_root": "/workspace/project",
-  "code_version": "4f5a4e34f7dfa53af15cda81adfb668bb35b5d21",
+  "code_version": "8553136b9a3b68f45a94959cc7977a028eb3f2d4",
   "runtime": {
-    "api": "http://127.0.0.1:3200 (running, NestJS+Prisma; Rules+RBAC)",
-    "web": "http://127.0.0.1:3201 (running, Vue3+Vite+Arco, live API only)",
-    "database": "cbec_autodelivery@127.0.0.1 (tables applied via prisma db push + migrate resolve init_core)"
+    "api": "http://127.0.0.1:3200 (NestJS+Prisma+Rules+RBAC+Ozon skeleton)",
+    "web": "http://127.0.0.1:3201 (Vue3+Arco, includes /rules)",
+    "database": "cbec_autodelivery@127.0.0.1"
   },
   "integrations": {
     "ozon": "NOT_CONFIGURED",
@@ -72,7 +72,7 @@
       "resume": "有授权再预发布"
     }
   ],
-  "next_action": "Finish/verify Vue console evidence (TASK-008); wait business facts for formal PRD; Ozon credentials for LIVE_READ",
+  "next_action": "Await BLK-BIZ-001 and/or BLK-OZON-001; local console usable now",
   "evidence_dir": "/workspace/project/evidence",
   "rules_rbac": {
     "passed": true,
@@ -86,5 +86,6 @@
       "GET /users (ADMIN)"
     ],
     "operator_forbidden_on_rules_write": true
-  }
+  },
+  "report": "docs/DELIVERY_REPORT.md"
 }
