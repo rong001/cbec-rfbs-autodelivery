@@ -1,0 +1,18 @@
+{
+  "provider": "OZON",
+  "fixture": "no Ozon credentials in process environment",
+  "getStatus": {
+    "status": "NOT_CONFIGURED",
+    "configured": false,
+    "live": false
+  },
+  "listOrdersPage": {
+    "status": "NOT_CONFIGURED",
+    "configured": false,
+    "live": false,
+    "httpAttempted": false,
+    "syntheticOrders": false
+  },
+  "verifiedBy": "apps/api/src/integrations/ozon/ozon.adapter.spec.ts",
+  "note": "No Ozon order data is claimed or returned."
+}

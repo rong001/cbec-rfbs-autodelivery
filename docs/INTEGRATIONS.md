@@ -30,9 +30,11 @@ These rules follow `ENGINE_AUTODELIVERY_MASTER.md` §8:
 | Data source / mapping | Local PostgreSQL records and synthetic first-loop payloads only; no authoritative Ozon IDs, cursor, webhook, or field mapping confirmed |
 | Intended future capabilities | Catalog/listing, order ingestion, inventory, and shipment flows behind an adapter; scope must be separately authorized |
 | Reliability requirements | Future adapter must specify pagination/cursors, rate limits, timeout, bounded retries, idempotency, reconciliation, and manual-review paths |
-| Verification | First-loop `/integrations/status` reports `NOT_CONFIGURED`, `ozonLive: false`, and says live calls are blocked |
-| Evidence | [`first-loop-2026-09-26T06-10-54-946Z.json`](../evidence/first-loop-2026-09-26T06-10-54-946Z.json) |
+| Verification | `/integrations/status` reports the DB `IntegrationCredential` row; without both env keys it is forced to `NOT_CONFIGURED` with `ozonLive: false`. Credentials alone only yield `AUTHORIZED_UNTESTED` |
+| Evidence | [`first-loop-2026-09-26T06-10-54-946Z.json`](../evidence/first-loop-2026-09-26T06-10-54-946Z.json); [`ozon-skeleton-not-configured.json`](../evidence/ozon-skeleton-not-configured.json) |
 | Not claimed | No Ozon listing publication, order sync, inventory sync, real label, shipment confirmation, or live account connection |
+
+The adapter skeleton is at `apps/api/src/integrations/ozon/ozon.adapter.ts`. `POST /integrations/ozon/test-read` returns `400 NOT_CONFIGURED` without both keys and `501 Not Implemented` when keys exist, until the current read endpoint/response contract is verified. It never returns synthetic orders.
 
 ### 1688
 

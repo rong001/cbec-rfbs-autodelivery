@@ -1,27 +1,26 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
+import { IntegrationStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { OzonAdapter } from './ozon/ozon.adapter';
 
 @Injectable()
 export class IntegrationsService implements OnModuleInit {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly ozon: OzonAdapter,
+  ) {}
 
   async onModuleInit() {
-    await this.prisma.integrationCredential.upsert({
-      where: { provider: 'OZON' },
-      create: {
-        provider: 'OZON',
-        status: 'NOT_CONFIGURED',
-        metaJson: {
-          note: 'No Ozon Client-Id / Api-Key injected. Live platform calls blocked.',
-          mode: process.env.OZON_MODE || 'NOT_CONFIGURED',
-        },
-      },
-      update: {},
-    });
+    await this.syncOzonCredentialStatus();
   }
 
   async status() {
+    // Re-syncing here also prevents a stale DB row from claiming authorization
+    // after credentials have been removed from the process environment.
+    await this.syncOzonCredentialStatus();
     const rows = await this.prisma.integrationCredential.findMany();
+    const ozonStatus = this.ozon.getStatus();
+
     return {
       integrations: rows.map((r) => ({
         provider: r.provider,
@@ -30,11 +29,42 @@ export class IntegrationsService implements OnModuleInit {
         updatedAt: r.updatedAt,
       })),
       honesty: {
-        ozonLive: false,
+        ozonLive: ozonStatus.live,
         secretsInDb: false,
-        message:
-          'Ozon is NOT_CONFIGURED. Closed-loop uses local Postgres + synthetic data only.',
+        message: ozonStatus.message,
       },
+    };
+  }
+
+  async testOzonRead() {
+    return this.ozon.listOrdersPage();
+  }
+
+  private async syncOzonCredentialStatus() {
+    const ozonStatus = this.ozon.getStatus();
+    const status = ozonStatus.status as IntegrationStatus;
+
+    await this.prisma.integrationCredential.upsert({
+      where: { provider: 'OZON' },
+      create: {
+        provider: 'OZON',
+        status,
+        metaJson: this.ozonMeta(ozonStatus),
+      },
+      update: {
+        status,
+        metaJson: this.ozonMeta(ozonStatus),
+      },
+    });
+  }
+
+  private ozonMeta(status: ReturnType<OzonAdapter['getStatus']>) {
+    return {
+      configured: status.configured,
+      live: status.live,
+      mode: status.mode,
+      note: status.message,
+      sellerApiBaseUrl: 'https://api-seller.ozon.ru',
     };
   }
 }
