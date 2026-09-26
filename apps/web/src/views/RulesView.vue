@@ -21,10 +21,10 @@ const canSubmit = computed(() =>
   form.name.trim().length > 0 && form.priority >= 0 && !creating.value,
 )
 
-function messageFor(errorValue: unknown, action = '操作') {
+function messageFor(errorValue: unknown, action = '操作', roles = 'MANAGER 或 ADMIN') {
   if (errorValue instanceof ApiError) {
     if (errorValue.status === 403) {
-      return `403 Forbidden：当前角色无权${action}规则（需要 MANAGER 或 ADMIN）。`
+      return `403 Forbidden：当前角色无权${action}规则（需要 ${roles}）。`
     }
     return `${errorValue.status}：${formatErrorBody(errorValue.body)}`
   }
@@ -49,7 +49,7 @@ async function load() {
   try {
     rows.value = await apiGet<FulfillmentRule[]>('/rules')
   } catch (e) {
-    error.value = messageFor(e, '查看')
+    error.value = messageFor(e, '查看', 'OPERATOR、MANAGER 或 ADMIN')
   } finally {
     loading.value = false
   }
