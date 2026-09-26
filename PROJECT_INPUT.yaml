@@ -1,0 +1,119 @@
+# PROJECT_INPUT.yaml — Engine Autodelivery fact archive
+# Generated: 2026-09-26T06:05:00Z
+# Rule: confirmed = user/verified; provisional = reversible hypothesis; missing = cannot drive irreversible work
+
+meta:
+  engine_version: "1.0"
+  project_root: /workspace/project
+  generated_at: "2026-09-26T06:05:00Z"
+  agent: 跨境定制
+
+company_and_business:
+  status: missing
+  value: null
+  source: "START_ENGINE.txt + user message used placeholders <填写> / <公司做什么…>"
+  notes: "占位符按总控视为缺失，不得当作真实客户数据"
+
+problem_to_solve:
+  status: missing
+  value: null
+  source: same
+
+target_business_chain:
+  status: provisional
+  value: |
+    候选域（来自现有仓库，非用户确认）：中国卖家 Ozon Russia rFBS/自发货 —
+    选品认领 → 刊登上架 → 订单同步 → 规则审单/物流匹配 → 面单发货 → 库存/补货预警。
+  source: "/workspace/ozonflow-rfbs-app/README.md, /workspace/ozon-rfbs-prototype/README.md"
+  must_ship_this_phase: missing
+  later_scope: missing
+
+users_and_scale:
+  status: missing
+  roles: missing
+  headcount: unknown
+  shops: unknown
+  skus: unknown
+  daily_orders: unknown
+  concurrency: unknown
+
+data_platforms_authorization:
+  status: mixed
+  existing_assets:
+    - path: /workspace/ozonflow-rfbs-app
+      kind: demo_spa_localStorage
+      remote: https://github.com/rong001/ozonflow-rfbs-app.git
+      status: confirmed
+      note: "真实改状态演示，非 API/DB；未提交仅 verify-*.png"
+    - path: /workspace/ozon-rfbs-prototype
+      kind: clickable_prototype_mock
+      status: confirmed
+    - path: /workspace/crossborder-ai-midplatform-repo
+      kind: demo_suite_static
+      status: confirmed
+    - path: /workspace/crossborder-suite
+      kind: demo_suite_static_builder
+      status: confirmed
+  ozon_api:
+    status: missing
+    auth: NOT_CONFIGURED
+    evidence: "no OZON_* / DATABASE_URL in environment"
+  "1688_api":
+    status: missing
+    auth: NOT_CONFIGURED
+  erp_or_files: missing
+  secrets_policy: "never paste keys in chat; use secret-request / env injection"
+
+rules_and_prohibitions:
+  status: missing
+  defaults_applied_from_master:
+    status: confirmed
+    authorization:
+      workspace_code_changes: true
+      local_build_and_tests: true
+      local_synthetic_test_data: true
+      install_project_dependencies_in_workspace: true
+      external_read_with_existing_scoped_authorization: true
+      staging_deploy: false
+      production_deploy: false
+      production_schema_change: false
+      production_business_writes: false
+      purchase_or_open_paid_resources: false
+      destructive_data_operations: false
+      expand_permissions_or_network_exposure: false
+      send_external_messages_or_marketing: false
+  business_rules_inventory_price_approval: missing
+  never_auto_execute: missing
+
+project_directory_and_deploy:
+  status: mixed
+  working_directory:
+    status: confirmed
+    value: /workspace/project
+  candidate_evolve_from:
+    status: provisional
+    value: /workspace/ozonflow-rfbs-app
+  deploy_destination:
+    status: missing
+    value: null
+    note: "尚无用户指定服务器/域名；默认只做本地可运行交付"
+  domains: missing
+
+success_criteria_budget_priority:
+  status: missing
+  acceptance_who_can_do_what: missing
+  budget_cap: unknown
+  priority: missing
+
+technical_assumptions:
+  status: provisional
+  stack:
+    frontend: "Vue 3 + TypeScript + Vite + Arco Vue (master baseline; may reuse ozonflow vanilla UI patterns)"
+    backend: "NestJS + TypeScript modular monolith"
+    database: "PostgreSQL with migrations"
+    queue: "deferred until needed; in-process jobs first"
+  rationale: "无既定后端栈；现有资产均为静态演示；总控默认基线"
+  first_closed_loop_candidate: |
+    本地：创建店铺(配置) → 导入/录入商品草稿 → 发布到内部在售表 → 创建订单 →
+    规则审单 → 生成面单号(内部) → 发货状态 → 库存扣减 → 审计日志。
+    Ozon 真实读写保持 BLOCKED until credentials + write auth.

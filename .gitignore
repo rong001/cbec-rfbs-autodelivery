@@ -1,0 +1,10 @@
+.env
+.env.local
+node_modules/
+dist/
+build/
+coverage/
+*.log
+.DS_Store
+apps/api/uploads/
+evidence/tmp/

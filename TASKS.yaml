@@ -1,0 +1,48 @@
+version: 1
+updated_at: "2026-09-26T06:06:30Z"
+tasks:
+  - id: TASK-001
+    title: 环境预检 ENVIRONMENT.md
+    state: RUNNING
+    dependencies: []
+    risk: low
+    blocker: null
+    next_action: merge subagent precheck
+  - id: TASK-002
+    title: 归档 PROJECT_INPUT.yaml
+    state: VERIFYING
+    dependencies: []
+    risk: low
+    blocker: null
+    completion_evidence:
+      - /workspace/project/PROJECT_INPUT.yaml
+  - id: TASK-003
+    title: 现有代码审计 ozonflow
+    state: RUNNING
+    dependencies: []
+    risk: low
+    blocker: null
+  - id: TASK-004
+    title: 初始化 NestJS+Vue+PG 工程骨架
+    state: TODO
+    dependencies: [TASK-001, TASK-003]
+    risk: low
+    blocker: null
+  - id: TASK-005
+    title: 第一条本地真实闭环（商品→订单→审单→发货→库存→审计）
+    state: TODO
+    dependencies: [TASK-004]
+    risk: medium
+    blocker: null
+  - id: TASK-006
+    title: Ozon 连接器状态机（至 LIVE_READ）
+    state: BLOCKED
+    dependencies: [TASK-004]
+    risk: high
+    blocker: BLK-OZON-001
+  - id: TASK-007
+    title: PRD+ACCEPTANCE（依赖业务事实）
+    state: BLOCKED
+    dependencies: [TASK-002]
+    risk: medium
+    blocker: BLK-BIZ-001

@@ -1,0 +1,47 @@
+{
+  "phase": "A",
+  "status": "precheck_in_progress",
+  "updated_at": "2026-09-26T06:06:00Z",
+  "project_root": "/workspace/project",
+  "code_version": null,
+  "runtime": {
+    "api": null,
+    "web": null,
+    "database": "cbec_autodelivery@127.0.0.1 (local role cbec_engine created)"
+  },
+  "integrations": {
+    "ozon": "NOT_CONFIGURED",
+    "1688": "NOT_CONFIGURED"
+  },
+  "blockers": [
+    {
+      "id": "BLK-BIZ-001",
+      "missing": "公司与业务、要解决的问题、首期必须上线范围、成功标准",
+      "why": "占位符不能当作正式需求；否则会静默缩减或编造业务",
+      "affects": ["PRD", "ACCEPTANCE", "正式规则与利润口径"],
+      "done_without_it": ["ENVIRONMENT", "PROJECT_INPUT", "本地 DB", "技术脚手架"],
+      "user_min_action": "用自然语言补全 START_ENGINE 八项业务信息（未知写未知）",
+      "resume": "更新 PROJECT_INPUT.yaml confirmed 字段后继续阶段 B"
+    },
+    {
+      "id": "BLK-OZON-001",
+      "missing": "Ozon API Client-Id / Api-Key 及读写授权范围",
+      "why": "真实平台闭环需要授权；禁止伪造接通",
+      "affects": ["LIVE_READ/WRITE", "阶段 F"],
+      "done_without_it": ["连接器骨架", "MOCK/本地闭环", "沙箱结构"],
+      "user_min_action": "通过密钥注入提供测试店铺只读或沙箱凭证（勿贴到聊天）",
+      "resume": "标记 AUTHORIZED_UNTESTED 后跑真实读取验证"
+    },
+    {
+      "id": "BLK-DEPLOY-001",
+      "missing": "部署目的地/域名/生产授权",
+      "why": "默认 staging_deploy/production_deploy=false",
+      "affects": ["阶段 H/I"],
+      "done_without_it": ["本地可运行交付与部署脚本"],
+      "user_min_action": "提供环境或写明尚无，接受仅本地交付",
+      "resume": "有授权再预发布"
+    }
+  ],
+  "next_action": "完成 ENVIRONMENT.md + 代码审计合并；在 provisional Ozon rFBS 域上初始化 apps/；并行等待用户补业务事实",
+  "evidence_dir": "/workspace/project/evidence"
+}
