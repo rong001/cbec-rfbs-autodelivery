@@ -66,6 +66,7 @@ async function main() {
     '/shipments',
     '/inventory',
     '/integrations/status',
+    '/rules',
     '/audit?limit=10',
   ]
   for (const path of gets) {

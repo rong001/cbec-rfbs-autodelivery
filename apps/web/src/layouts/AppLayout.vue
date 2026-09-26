@@ -11,6 +11,7 @@ import {
   IconSend,
   IconApps,
   IconLink,
+  IconSettings,
   IconHistory,
   IconPoweroff,
 } from '@arco-design/web-vue/es/icon'
@@ -31,6 +32,7 @@ const menus = [
   { key: 'shipments', label: '面单/发货', icon: () => h(IconSend) },
   { key: 'inventory', label: '库存', icon: () => h(IconStorage) },
   { key: 'integrations', label: '集成', icon: () => h(IconLink) },
+  { key: 'rules', label: '自动化规则', icon: () => h(IconSettings) },
   { key: 'audit', label: '审计', icon: () => h(IconHistory) },
 ]
 

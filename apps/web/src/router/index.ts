@@ -22,6 +22,7 @@ const router = createRouter({
         { path: 'shipments', name: 'shipments', component: () => import('../views/ShipmentsView.vue'), meta: { title: '面单/发货' } },
         { path: 'inventory', name: 'inventory', component: () => import('../views/InventoryView.vue'), meta: { title: '库存' } },
         { path: 'integrations', name: 'integrations', component: () => import('../views/IntegrationsView.vue'), meta: { title: '集成' } },
+        { path: 'rules', name: 'rules', component: () => import('../views/RulesView.vue'), meta: { title: '自动化规则' } },
         { path: 'audit', name: 'audit', component: () => import('../views/AuditView.vue'), meta: { title: '审计' } },
       ],
     },

@@ -111,6 +111,17 @@ export interface Order {
   shop?: Shop
 }
 
+export interface FulfillmentRule {
+  id: string
+  name: string
+  enabled: boolean
+  priority: number
+  conditionJson: Record<string, unknown>
+  actionJson: Record<string, unknown>
+  createdAt: string
+  updatedAt: string
+}
+
 export interface IntegrationEntry {
   provider: string
   status: IntegrationStatus

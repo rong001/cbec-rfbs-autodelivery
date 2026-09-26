@@ -33,7 +33,7 @@ async function onSubmit() {
     <a-card class="login-card" title="跨境自动履约 · 登录">
       <p class="muted">JWT Bearer 认证，对接本地 Nest API（127.0.0.1:3200）</p>
       <div v-if="error" class="err-box" style="margin-bottom: 12px">{{ error }}</div>
-      <a-form layout="vertical" @submit.prevent="onSubmit">
+      <a-form :model="{}" layout="vertical" @submit.prevent="onSubmit">
         <a-form-item label="邮箱">
           <a-input v-model="email" placeholder="admin@local.dev" allow-clear />
         </a-form-item>
