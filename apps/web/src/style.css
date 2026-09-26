@@ -1,0 +1,77 @@
+:root {
+  color-scheme: light;
+  font-family: "PingFang SC", "Noto Sans SC", "Segoe UI", system-ui, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #1d2129;
+  background: #f2f3f5;
+}
+
+* { box-sizing: border-box; }
+html, body, #app { margin: 0; min-height: 100%; }
+body { background: #f2f3f5; }
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.page-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.muted { color: #86909c; font-size: 13px; }
+.err-box {
+  background: #ffece8;
+  border: 1px solid #f98981;
+  color: #cb272d;
+  border-radius: 6px;
+  padding: 10px 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 13px;
+}
+.ok-box {
+  background: #e8ffea;
+  border: 1px solid #7be188;
+  color: #009a29;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 13px;
+}
+.warn-box {
+  background: #fff7e8;
+  border: 1px solid #f7ba1e;
+  color: #b35c00;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 13px;
+}
+.card-form {
+  display: grid;
+  gap: 12px;
+  max-width: 640px;
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 8px;
+  align-items: center;
+}
+.form-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }

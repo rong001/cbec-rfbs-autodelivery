@@ -1,12 +1,12 @@
 {
   "phase": "B",
   "status": "first_loop_passed",
-  "updated_at": "2026-09-26T06:11:00Z",
+  "updated_at": "2026-09-26T06:14:25Z",
   "project_root": "/workspace/project",
   "code_version": "b766b0d1a4c7e9faec04539397f01000f06106af",
   "runtime": {
     "api": "http://127.0.0.1:3200 (running, NestJS+Prisma)",
-    "web": null,
+    "web": "http://127.0.0.1:3201 (running, Vue3+Vite+Arco, live API only)",
     "database": "cbec_autodelivery@127.0.0.1 (tables applied via prisma db push + migrate resolve init_core)"
   },
   "integrations": {
@@ -16,61 +16,61 @@
   "first_loop": {
     "passed": true,
     "evidence": "/workspace/project/evidence/first-loop-2026-09-26T06-10-54-946Z.json",
-    "path": "health \u2192 auth \u2192 shop \u2192 claim product+listing \u2192 advance \u2192 publish \u2192 order \u2192 run-rules \u2192 label(INT-MOCK) \u2192 ship \u2192 inventory 10\u21927 \u2192 audit",
+    "path": "health → auth → shop → claim product+listing → advance → publish → order → run-rules → label(INT-MOCK) → ship → inventory 10→7 → audit",
     "tracking_source": "INTERNAL_GENERATED",
     "ozon_live": false
   },
   "blockers": [
     {
       "id": "BLK-BIZ-001",
-      "missing": "\u516c\u53f8\u4e0e\u4e1a\u52a1\u3001\u8981\u89e3\u51b3\u7684\u95ee\u9898\u3001\u9996\u671f\u5fc5\u987b\u4e0a\u7ebf\u8303\u56f4\u3001\u6210\u529f\u6807\u51c6",
-      "why": "\u5360\u4f4d\u7b26\u4e0d\u80fd\u5f53\u4f5c\u6b63\u5f0f\u9700\u6c42\uff1b\u5426\u5219\u4f1a\u9759\u9ed8\u7f29\u51cf\u6216\u7f16\u9020\u4e1a\u52a1",
+      "missing": "公司与业务、要解决的问题、首期必须上线范围、成功标准",
+      "why": "占位符不能当作正式需求；否则会静默缩减或编造业务",
       "affects": [
         "PRD",
         "ACCEPTANCE",
-        "\u6b63\u5f0f\u89c4\u5219\u4e0e\u5229\u6da6\u53e3\u5f84"
+        "正式规则与利润口径"
       ],
       "done_without_it": [
         "ENVIRONMENT",
         "PROJECT_INPUT",
-        "\u672c\u5730 DB",
-        "\u6280\u672f\u811a\u624b\u67b6",
-        "\u7b2c\u4e00\u6761\u672c\u5730\u95ed\u73af"
+        "本地 DB",
+        "技术脚手架",
+        "第一条本地闭环"
       ],
-      "user_min_action": "\u7528\u81ea\u7136\u8bed\u8a00\u8865\u5168 START_ENGINE \u516b\u9879\u4e1a\u52a1\u4fe1\u606f\uff08\u672a\u77e5\u5199\u672a\u77e5\uff09",
-      "resume": "\u66f4\u65b0 PROJECT_INPUT.yaml confirmed \u5b57\u6bb5\u540e\u7ee7\u7eed\u9636\u6bb5 B/PRD"
+      "user_min_action": "用自然语言补全 START_ENGINE 八项业务信息（未知写未知）",
+      "resume": "更新 PROJECT_INPUT.yaml confirmed 字段后继续阶段 B/PRD"
     },
     {
       "id": "BLK-OZON-001",
-      "missing": "Ozon API Client-Id / Api-Key \u53ca\u8bfb\u5199\u6388\u6743\u8303\u56f4",
-      "why": "\u771f\u5b9e\u5e73\u53f0\u95ed\u73af\u9700\u8981\u6388\u6743\uff1b\u7981\u6b62\u4f2a\u9020\u63a5\u901a",
+      "missing": "Ozon API Client-Id / Api-Key 及读写授权范围",
+      "why": "真实平台闭环需要授权；禁止伪造接通",
       "affects": [
         "LIVE_READ/WRITE",
-        "\u9636\u6bb5 F"
+        "阶段 F"
       ],
       "done_without_it": [
-        "\u8fde\u63a5\u5668\u9aa8\u67b6",
-        "MOCK/\u672c\u5730\u95ed\u73af",
-        "\u6c99\u7bb1\u7ed3\u6784",
+        "连接器骨架",
+        "MOCK/本地闭环",
+        "沙箱结构",
         "IntegrationCredential status=NOT_CONFIGURED"
       ],
-      "user_min_action": "\u901a\u8fc7\u5bc6\u94a5\u6ce8\u5165\u63d0\u4f9b\u6d4b\u8bd5\u5e97\u94fa\u53ea\u8bfb\u6216\u6c99\u7bb1\u51ed\u8bc1\uff08\u52ff\u8d34\u5230\u804a\u5929\uff09",
-      "resume": "\u6807\u8bb0 AUTHORIZED_UNTESTED \u540e\u8dd1\u771f\u5b9e\u8bfb\u53d6\u9a8c\u8bc1"
+      "user_min_action": "通过密钥注入提供测试店铺只读或沙箱凭证（勿贴到聊天）",
+      "resume": "标记 AUTHORIZED_UNTESTED 后跑真实读取验证"
     },
     {
       "id": "BLK-DEPLOY-001",
-      "missing": "\u90e8\u7f72\u76ee\u7684\u5730/\u57df\u540d/\u751f\u4ea7\u6388\u6743",
-      "why": "\u9ed8\u8ba4 staging_deploy/production_deploy=false",
+      "missing": "部署目的地/域名/生产授权",
+      "why": "默认 staging_deploy/production_deploy=false",
       "affects": [
-        "\u9636\u6bb5 H/I"
+        "阶段 H/I"
       ],
       "done_without_it": [
-        "\u672c\u5730\u53ef\u8fd0\u884c\u4ea4\u4ed8\u4e0e\u90e8\u7f72\u811a\u672c"
+        "本地可运行交付与部署脚本"
       ],
-      "user_min_action": "\u63d0\u4f9b\u73af\u5883\u6216\u5199\u660e\u5c1a\u65e0\uff0c\u63a5\u53d7\u4ec5\u672c\u5730\u4ea4\u4ed8",
-      "resume": "\u6709\u6388\u6743\u518d\u9884\u53d1\u5e03"
+      "user_min_action": "提供环境或写明尚无，接受仅本地交付",
+      "resume": "有授权再预发布"
     }
   ],
-  "next_action": "\u53ef\u9009\uff1aVue web \u5bf9\u63a5 API\uff1b\u7b49\u5f85\u4e1a\u52a1\u4e8b\u5b9e\u8865\u5168 PRD\uff1bOzon \u51ed\u8bc1\u540e\u8fdb\u5165 LIVE_READ",
+  "next_action": "Web console online; await business facts for PRD; Ozon credentials for LIVE_READ",
   "evidence_dir": "/workspace/project/evidence"
 }
