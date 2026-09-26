@@ -117,3 +117,5 @@ technical_assumptions:
     本地：创建店铺(配置) → 导入/录入商品草稿 → 发布到内部在售表 → 创建订单 →
     规则审单 → 生成面单号(内部) → 发货状态 → 库存扣减 → 审计日志。
     Ozon 真实读写保持 BLOCKED until credentials + write auth.
+
+# Decision 2026-09-26: user skipped direction widget; proceeding with provisional Ozon rFBS midplatform (ozonflow-derived). Formal company rules remain missing.

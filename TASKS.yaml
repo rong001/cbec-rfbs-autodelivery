@@ -1,16 +1,17 @@
 version: 1
-updated_at: "2026-09-26T06:06:30Z"
+updated_at: "2026-09-26T06:11:00Z"
 tasks:
   - id: TASK-001
     title: 环境预检 ENVIRONMENT.md
-    state: RUNNING
+    state: DONE
     dependencies: []
     risk: low
     blocker: null
-    next_action: merge subagent precheck
+    completion_evidence:
+      - /workspace/project/docs/ENVIRONMENT.md
   - id: TASK-002
     title: 归档 PROJECT_INPUT.yaml
-    state: VERIFYING
+    state: DONE
     dependencies: []
     risk: low
     blocker: null
@@ -18,22 +19,30 @@ tasks:
       - /workspace/project/PROJECT_INPUT.yaml
   - id: TASK-003
     title: 现有代码审计 ozonflow
-    state: RUNNING
+    state: DONE
     dependencies: []
     risk: low
     blocker: null
+    completion_evidence:
+      - /workspace/project/docs/EXISTING_CODE_AUDIT.md
   - id: TASK-004
     title: 初始化 NestJS+Vue+PG 工程骨架
-    state: TODO
+    state: DONE
     dependencies: [TASK-001, TASK-003]
     risk: low
     blocker: null
+    notes: "API NestJS+Prisma+PG 已落地；Vue web 尚未初始化"
+    completion_evidence:
+      - /workspace/project/apps/api
   - id: TASK-005
     title: 第一条本地真实闭环（商品→订单→审单→发货→库存→审计）
-    state: TODO
+    state: DONE
     dependencies: [TASK-004]
     risk: medium
     blocker: null
+    completion_evidence:
+      - /workspace/project/evidence/first-loop-2026-09-26T06-10-54-946Z.json
+      - /workspace/project/apps/api/scripts/e2e-local-loop.mjs
   - id: TASK-006
     title: Ozon 连接器状态机（至 LIVE_READ）
     state: BLOCKED
@@ -46,3 +55,9 @@ tasks:
     dependencies: [TASK-002]
     risk: medium
     blocker: BLK-BIZ-001
+  - id: TASK-008
+    title: Vue web 对接本地 API（选品/刊登/订单/发货）
+    state: TODO
+    dependencies: [TASK-005]
+    risk: low
+    blocker: null

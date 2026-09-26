@@ -1,0 +1,210 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  OPERATOR
+}
+
+enum ShopPlatform {
+  OZON_RFBS
+  OTHER
+}
+
+enum ShopStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum ListingStatus {
+  DRAFT
+  MAPPING
+  READY
+  PUBLISHED
+  FAILED
+}
+
+enum OrderStatus {
+  PENDING_REVIEW
+  APPROVED
+  PENDING_PROCUREMENT
+  AWAITING_SHIPMENT
+  SHIPPED
+  CANCELLED
+}
+
+enum IntegrationProvider {
+  OZON
+  OTHER
+}
+
+enum IntegrationStatus {
+  NOT_CONFIGURED
+  AUTHORIZED_UNTESTED
+  MOCK_ONLY
+  SANDBOX_VERIFIED
+  LIVE_READ_VERIFIED
+  LIVE_WRITE_VERIFIED
+  BLOCKED
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  role         UserRole  @default(OPERATOR)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  auditLogs    AuditLog[]
+}
+
+model Shop {
+  id             String       @id @default(cuid())
+  name           String
+  platform       ShopPlatform @default(OZON_RFBS)
+  externalShopId String?
+  status         ShopStatus   @default(ACTIVE)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  products       Product[]
+  orders         Order[]
+}
+
+model Product {
+  id             String         @id @default(cuid())
+  shopId         String
+  shop           Shop           @relation(fields: [shopId], references: [id])
+  sku            String
+  title          String
+  costCny        Decimal        @db.Decimal(12, 2)
+  weightG        Int
+  status         ProductStatus  @default(DRAFT)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  listings       Listing[]
+  inventory      InventoryItem?
+  orderLines     OrderLine[]
+
+  @@unique([shopId, sku])
+  @@index([shopId])
+}
+
+model Listing {
+  id          String         @id @default(cuid())
+  productId   String
+  product     Product        @relation(fields: [productId], references: [id])
+  titleRu     String
+  status      ListingStatus  @default(DRAFT)
+  publishedAt DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([productId])
+  @@index([status])
+}
+
+model InventoryItem {
+  id           String   @id @default(cuid())
+  productId    String   @unique
+  product      Product  @relation(fields: [productId], references: [id])
+  qtyOnHand    Int      @default(0)
+  reorderPoint Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  shopId      String
+  shop        Shop        @relation(fields: [shopId], references: [id])
+  orderNo     String      @unique
+  status      OrderStatus @default(PENDING_REVIEW)
+  totalAmount Decimal?    @db.Decimal(12, 2)
+  currency    String      @default("RUB")
+  buyerNote   String?
+  etaHours    Int?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  lines       OrderLine[]
+  shipment    Shipment?
+
+  @@index([shopId])
+  @@index([status])
+}
+
+model OrderLine {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  sku       String
+  qty       Int
+  unitPrice Decimal @db.Decimal(12, 2)
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+model FulfillmentRule {
+  id            String   @id @default(cuid())
+  name          String
+  enabled       Boolean  @default(true)
+  priority      Int      @default(100)
+  conditionJson Json
+  actionJson    Json
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([enabled, priority])
+}
+
+model Shipment {
+  id         String    @id @default(cuid())
+  orderId    String    @unique
+  order      Order     @relation(fields: [orderId], references: [id])
+  trackingNo String?
+  carrier    String?
+  labeledAt  DateTime?
+  shippedAt  DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  actorUserId String?
+  actor       User?    @relation(fields: [actorUserId], references: [id])
+  action      String
+  entityType  String
+  entityId    String
+  beforeJson  Json?
+  afterJson   Json?
+  createdAt   DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
+
+model IntegrationCredential {
+  id        String              @id @default(cuid())
+  provider  IntegrationProvider @unique
+  status    IntegrationStatus   @default(NOT_CONFIGURED)
+  metaJson  Json?
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+}
