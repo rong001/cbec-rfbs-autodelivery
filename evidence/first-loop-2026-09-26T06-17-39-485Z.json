@@ -1,0 +1,196 @@
+{
+  "startedAt": "2026-09-26T06:17:39.485Z",
+  "baseUrl": "http://127.0.0.1:3200",
+  "ok": true,
+  "steps": [
+    {
+      "name": "health.ready",
+      "ok": true,
+      "at": "2026-09-26T06:17:39.544Z",
+      "detail": {
+        "status": "ready",
+        "db": "up",
+        "ts": "2026-09-26T06:17:39.537Z"
+      }
+    },
+    {
+      "name": "auth.login",
+      "ok": true,
+      "at": "2026-09-26T06:17:39.634Z",
+      "detail": {
+        "user": {
+          "id": "cmuhzquak0000ggyjxdwsft7d",
+          "email": "admin@local.dev",
+          "role": "ADMIN"
+        }
+      }
+    },
+    {
+      "name": "shops.create",
+      "ok": true,
+      "at": "2026-09-26T06:17:39.644Z",
+      "detail": {
+        "id": "cmuhzzqye00029yhljtl6vlf2",
+        "name": "E2E Shop 1790403459634"
+      }
+    },
+    {
+      "name": "products.claim-from-selection",
+      "ok": true,
+      "at": "2026-09-26T06:17:39.656Z",
+      "detail": {
+        "productId": "cmuhzzqyp00079yhlitimr03l",
+        "listingId": "cmuhzzqys00099yhllies0bpw",
+        "sku": "SKU-E2E-1790403459644"
+      }
+    },
+    {
+      "name": "listings.advance.MAPPING",
+      "ok": true,
+      "at": "2026-09-26T06:17:39.665Z",
+      "detail": {
+        "status": "MAPPING"
+      }
+    },
+    {
+      "name": "listings.advance.READY",
+      "ok": true,
+      "at": "2026-09-26T06:17:39.673Z",
+      "detail": {
+        "status": "READY"
+      }
+    },
+    {
+      "name": "listings.publish",
+      "ok": true,
+      "at": "2026-09-26T06:17:39.684Z",
+      "detail": {
+        "listingStatus": "PUBLISHED",
+        "qtyOnHand": 10
+      }
+    },
+    {
+      "name": "orders.create",
+      "ok": true,
+      "at": "2026-09-26T06:17:39.694Z",
+      "detail": {
+        "id": "cmuhzzqzt000m9yhl9mz2u0g3",
+        "orderNo": "LOC-1790403459689-CB7CJ",
+        "status": "PENDING_REVIEW"
+      }
+    },
+    {
+      "name": "orders.run-rules",
+      "ok": true,
+      "at": "2026-09-26T06:17:39.712Z",
+      "detail": {
+        "rulesApplied": 3,
+        "ordersTouched": 1,
+        "applied": [
+          {
+            "orderId": "cmuhzzqzt000m9yhl9mz2u0g3",
+            "actions": [
+              "AUTO_APPROVE:auto-approve-pending",
+              "SUGGEST_CARRIER:suggest-carrier-internal:INTERNAL_MOCK_CARRIER"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "orders.status.after-rules",
+      "ok": true,
+      "at": "2026-09-26T06:17:39.717Z",
+      "detail": {
+        "status": "AWAITING_SHIPMENT",
+        "carrier": "INTERNAL_MOCK_CARRIER"
+      }
+    },
+    {
+      "name": "shipments.label",
+      "ok": true,
+      "at": "2026-09-26T06:17:39.726Z",
+      "detail": {
+        "trackingNo": "INT-MOCK-1790403459721-DC50LB",
+        "carrier": "INTERNAL_MOCK_CARRIER",
+        "meta": {
+          "trackingSource": "INTERNAL_GENERATED",
+          "carrierApi": false,
+          "honesty": "Tracking number is generated locally for closed-loop demo. Ozon/carrier APIs are NOT_CONFIGURED."
+        }
+      }
+    },
+    {
+      "name": "shipments.ship",
+      "ok": true,
+      "at": "2026-09-26T06:17:39.738Z",
+      "detail": {
+        "status": "SHIPPED"
+      }
+    },
+    {
+      "name": "inventory.decrement",
+      "ok": true,
+      "at": "2026-09-26T06:17:39.742Z",
+      "detail": {
+        "qtyOnHand": 7,
+        "expected": 7
+      }
+    },
+    {
+      "name": "audit.exists",
+      "ok": true,
+      "at": "2026-09-26T06:17:39.749Z",
+      "detail": {
+        "count": 64,
+        "sampleActions": [
+          "SHIPMENT_SHIP",
+          "INVENTORY_DECREMENT_ON_SHIP",
+          "SHIPMENT_LABEL",
+          "ORDER_RUN_RULES",
+          "ORDER_CREATE",
+          "LISTING_PUBLISH",
+          "LISTING_ADVANCE",
+          "LISTING_ADVANCE",
+          "PRODUCT_CLAIM_FROM_SELECTION",
+          "SHOP_CREATE",
+          "SHIPMENT_SHIP",
+          "INVENTORY_DECREMENT_ON_SHIP"
+        ]
+      }
+    },
+    {
+      "name": "integrations.ozon.NOT_CONFIGURED",
+      "ok": true,
+      "at": "2026-09-26T06:17:39.754Z",
+      "detail": {
+        "provider": "OZON",
+        "status": "NOT_CONFIGURED",
+        "meta": {
+          "live": false,
+          "mode": "NOT_CONFIGURED",
+          "note": "Ozon Client-Id and Api-Key are not configured; live calls are blocked.",
+          "configured": false,
+          "sellerApiBaseUrl": "https://api-seller.ozon.ru"
+        },
+        "updatedAt": "2026-09-26T06:17:39.751Z"
+      }
+    }
+  ],
+  "honesty": {
+    "ozonLive": false,
+    "trackingSource": "INTERNAL_GENERATED",
+    "domain": "provisional Ozon rFBS midplatform"
+  },
+  "finishedAt": "2026-09-26T06:17:39.754Z",
+  "summary": {
+    "shopId": "cmuhzzqye00029yhljtl6vlf2",
+    "productId": "cmuhzzqyp00079yhlitimr03l",
+    "listingId": "cmuhzzqys00099yhllies0bpw",
+    "orderId": "cmuhzzqzt000m9yhl9mz2u0g3",
+    "orderNo": "LOC-1790403459689-CB7CJ",
+    "trackingNo": "INT-MOCK-1790403459721-DC50LB",
+    "finalOrderStatus": "SHIPPED",
+    "inventoryAfter": 7
+  }
+}

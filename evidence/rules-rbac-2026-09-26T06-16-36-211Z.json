@@ -1,0 +1,188 @@
+{
+  "startedAt": "2026-09-26T06:16:36.212Z",
+  "baseUrl": "http://127.0.0.1:3200",
+  "ok": true,
+  "reqIds": [
+    "REQ-RULE-001",
+    "REQ-RBAC-001"
+  ],
+  "steps": [
+    {
+      "name": "health.ready",
+      "ok": true,
+      "at": "2026-09-26T06:16:36.272Z",
+      "detail": {
+        "status": "ready",
+        "db": "up",
+        "ts": "2026-09-26T06:16:36.265Z"
+      }
+    },
+    {
+      "name": "auth.admin.login",
+      "ok": true,
+      "at": "2026-09-26T06:16:36.364Z",
+      "detail": {
+        "role": "ADMIN"
+      }
+    },
+    {
+      "name": "rules.list.defaults",
+      "ok": true,
+      "at": "2026-09-26T06:16:36.376Z",
+      "detail": {
+        "count": 5,
+        "names": [
+          "e2e-force-carrier-1790403368440",
+          "auto-approve-pending",
+          "e2e-force-carrier-1790403374908",
+          "mark-procurement-if-low-stock",
+          "suggest-carrier-internal"
+        ]
+      }
+    },
+    {
+      "name": "rules.create",
+      "ok": true,
+      "at": "2026-09-26T06:16:36.384Z",
+      "detail": {
+        "id": "cmuhzye580003av0txagdpvg1",
+        "name": "e2e-force-carrier-1790403396376",
+        "priority": 12
+      }
+    },
+    {
+      "name": "rules.disable",
+      "ok": true,
+      "at": "2026-09-26T06:16:36.392Z",
+      "detail": {
+        "enabled": false
+      }
+    },
+    {
+      "name": "rules.enable",
+      "ok": true,
+      "at": "2026-09-26T06:16:36.400Z",
+      "detail": {
+        "enabled": true
+      }
+    },
+    {
+      "name": "orders.create.for-rules",
+      "ok": true,
+      "at": "2026-09-26T06:16:36.452Z",
+      "detail": {
+        "orderId": "cmuhzye74000uav0te0ifh4pa",
+        "status": "PENDING_REVIEW"
+      }
+    },
+    {
+      "name": "orders.run-rules.hit-new-rule",
+      "ok": true,
+      "at": "2026-09-26T06:16:36.465Z",
+      "detail": {
+        "appliedForOrder": {
+          "orderId": "cmuhzye74000uav0te0ifh4pa",
+          "actions": [
+            "AUTO_APPROVE:auto-approve-pending",
+            "SUGGEST_CARRIER:e2e-force-carrier-1790403396376:E2E_RULES_CARRIER"
+          ]
+        }
+      }
+    },
+    {
+      "name": "orders.carrier.from-rule",
+      "ok": true,
+      "at": "2026-09-26T06:16:36.469Z",
+      "detail": {
+        "status": "AWAITING_SHIPMENT",
+        "carrier": "E2E_RULES_CARRIER"
+      }
+    },
+    {
+      "name": "auth.operator.register",
+      "ok": true,
+      "at": "2026-09-26T06:16:36.550Z",
+      "detail": {
+        "email": "operator-1790403396469@local.dev",
+        "role": "OPERATOR"
+      }
+    },
+    {
+      "name": "rbac.operator.rules.create.403",
+      "ok": true,
+      "at": "2026-09-26T06:16:36.554Z",
+      "detail": {
+        "status": 403,
+        "message": "Role OPERATOR cannot access this resource; requires one of: ADMIN, MANAGER",
+        "requiredRoles": [
+          "ADMIN",
+          "MANAGER"
+        ]
+      }
+    },
+    {
+      "name": "rbac.operator.rules.enabled.403",
+      "ok": true,
+      "at": "2026-09-26T06:16:36.557Z",
+      "detail": {
+        "status": 403,
+        "message": "Role OPERATOR cannot access this resource; requires one of: ADMIN, MANAGER"
+      }
+    },
+    {
+      "name": "rbac.operator.run-rules.403",
+      "ok": true,
+      "at": "2026-09-26T06:16:36.558Z",
+      "detail": {
+        "status": 403,
+        "message": "Role OPERATOR cannot access this resource; requires one of: ADMIN, MANAGER"
+      }
+    },
+    {
+      "name": "rbac.operator.rules.read.allowed",
+      "ok": true,
+      "at": "2026-09-26T06:16:36.562Z",
+      "detail": {
+        "count": 6
+      }
+    },
+    {
+      "name": "rbac.operator.users.403",
+      "ok": true,
+      "at": "2026-09-26T06:16:36.564Z",
+      "detail": {
+        "status": 403,
+        "message": "Role OPERATOR cannot access this resource; requires one of: ADMIN"
+      }
+    },
+    {
+      "name": "rbac.admin.users.list",
+      "ok": true,
+      "at": "2026-09-26T06:16:36.569Z",
+      "detail": {
+        "count": 2
+      }
+    },
+    {
+      "name": "rules.cleanup.disable",
+      "ok": true,
+      "at": "2026-09-26T06:11:30.004Z",
+      "detail": {
+        "id": "cmuhzye580003av0txagdpvg1",
+        "enabled": false
+      }
+    }
+  ],
+  "honesty": {
+    "ozonLive": false,
+    "domain": "provisional Ozon rFBS midplatform"
+  },
+  "finishedAt": "2026-09-26T06:11:30.004Z",
+  "summary": {
+    "ruleId": "cmuhzye580003av0txagdpvg1",
+    "ruleName": "e2e-force-carrier-1790403396376",
+    "orderId": "cmuhzye74000uav0te0ifh4pa",
+    "carrierFromRule": "E2E_RULES_CARRIER",
+    "operatorForbiddenOnRulesWrite": true
+  }
+}

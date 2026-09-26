@@ -1,5 +1,5 @@
 version: 2
-updated_at: "2026-09-26T06:11:00Z"
+updated_at: "2026-09-26T06:17:00Z"
 tasks:
   - id: TASK-001
     title: 环境预检 ENVIRONMENT.md
@@ -41,9 +41,9 @@ tasks:
     dependencies: [TASK-004]
     risk: medium
     blocker: null
-    notes: "本地 PostgreSQL + synthetic/local records；不代表 Ozon/carrier live"
+    notes: "本地 PostgreSQL + synthetic/local records；不代表 Ozon/carrier live；RBAC 后回归仍通过"
     completion_evidence:
-      - /workspace/project/evidence/first-loop-2026-09-26T06-10-54-946Z.json
+      - /workspace/project/evidence/first-loop-2026-09-26T06-17-39-485Z.json
       - /workspace/project/apps/api/scripts/e2e-local-loop.mjs
   - id: TASK-006
     title: Ozon 连接器状态机（至 LIVE_READ）
@@ -68,11 +68,15 @@ tasks:
     dependencies: [TASK-005]
     risk: low
     blocker: null
-    notes: "apps/web 仍为 scaffold；console 与真实 loading/error/empty states 待实现"
+    notes: "另一 agent 已提交 Vue3+Arco console 骨架；本任务勿改 apps/web；验收证据仍待补齐"
   - id: TASK-009
     title: 规则 CRUD 与 ADMIN/MANAGER/OPERATOR 角色权限
-    state: RUNNING
+    state: DONE
     dependencies: [TASK-004, TASK-005]
     risk: medium
     blocker: null
-    notes: "规则 schema/default run 已存在；CRUD 与 server-side role enforcement 尚无证据"
+    notes: "Rules CRUD + RolesGuard 已落地；OPERATOR 写规则/run-rules 返回 403；defaults 按 name 幂等种子"
+    completion_evidence:
+      - /workspace/project/evidence/rules-rbac-2026-09-26T06-16-36-211Z.json
+      - /workspace/project/apps/api/scripts/e2e-rules-rbac.mjs
+      - /workspace/project/apps/api/README.md

@@ -1,11 +1,11 @@
 {
   "phase": "B",
-  "status": "first_loop_passed",
-  "updated_at": "2026-09-26T06:14:31Z",
+  "status": "rules_rbac_done_first_loop_green",
+  "updated_at": "2026-09-26T06:18:00Z",
   "project_root": "/workspace/project",
   "code_version": "bbc9824ac2913e5d21e70ba9ddf7c9225505670b",
   "runtime": {
-    "api": "http://127.0.0.1:3200 (running, NestJS+Prisma)",
+    "api": "http://127.0.0.1:3200 (running, NestJS+Prisma; Rules+RBAC)",
     "web": "http://127.0.0.1:3201 (running, Vue3+Vite+Arco, live API only)",
     "database": "cbec_autodelivery@127.0.0.1 (tables applied via prisma db push + migrate resolve init_core)"
   },
@@ -15,10 +15,11 @@
   },
   "first_loop": {
     "passed": true,
-    "evidence": "/workspace/project/evidence/first-loop-2026-09-26T06-10-54-946Z.json",
+    "evidence": "/workspace/project/evidence/first-loop-2026-09-26T06-17-39-485Z.json",
     "path": "health → auth → shop → claim product+listing → advance → publish → order → run-rules → label(INT-MOCK) → ship → inventory 10→7 → audit",
     "tracking_source": "INTERNAL_GENERATED",
-    "ozon_live": false
+    "ozon_live": false,
+    "regression_after_rbac": true
   },
   "blockers": [
     {
@@ -71,6 +72,19 @@
       "resume": "有授权再预发布"
     }
   ],
-  "next_action": "Web console online; await business facts for PRD; Ozon credentials for LIVE_READ",
-  "evidence_dir": "/workspace/project/evidence"
+  "next_action": "Finish/verify Vue console evidence (TASK-008); wait business facts for formal PRD; Ozon credentials for LIVE_READ",
+  "evidence_dir": "/workspace/project/evidence",
+  "rules_rbac": {
+    "passed": true,
+    "evidence": "/workspace/project/evidence/rules-rbac-2026-09-26T06-16-36-211Z.json",
+    "endpoints": [
+      "GET /rules",
+      "GET /rules/:id",
+      "POST /rules",
+      "PATCH /rules/:id",
+      "PATCH /rules/:id/enabled",
+      "GET /users (ADMIN)"
+    ],
+    "operator_forbidden_on_rules_write": true
+  }
 }

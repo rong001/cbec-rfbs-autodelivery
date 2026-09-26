@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-  OnModuleInit,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
@@ -10,50 +9,11 @@ import { AuditService } from '../audit/audit.service';
 import { CreateOrderDto } from './orders.dto';
 
 @Injectable()
-export class OrdersService implements OnModuleInit {
+export class OrdersService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly audit: AuditService,
   ) {}
-
-  async onModuleInit() {
-    await this.ensureDefaultRules();
-  }
-
-  private async ensureDefaultRules() {
-    const count = await this.prisma.fulfillmentRule.count();
-    if (count > 0) return;
-    await this.prisma.fulfillmentRule.createMany({
-      data: [
-        {
-          name: 'auto-approve-pending',
-          enabled: true,
-          priority: 10,
-          conditionJson: { status: 'PENDING_REVIEW' },
-          actionJson: { type: 'AUTO_APPROVE' },
-        },
-        {
-          name: 'suggest-carrier-internal',
-          enabled: true,
-          priority: 20,
-          conditionJson: {
-            statusIn: ['APPROVED', 'AWAITING_SHIPMENT', 'PENDING_PROCUREMENT'],
-          },
-          actionJson: {
-            type: 'SUGGEST_CARRIER',
-            carrier: 'INTERNAL_MOCK_CARRIER',
-          },
-        },
-        {
-          name: 'mark-procurement-if-low-stock',
-          enabled: true,
-          priority: 15,
-          conditionJson: { checkInventory: true },
-          actionJson: { type: 'MARK_PENDING_PROCUREMENT' },
-        },
-      ],
-    });
-  }
 
   list() {
     return this.prisma.order.findMany({
@@ -228,11 +188,16 @@ export class OrdersService implements OnModuleInit {
           if (statusIn.includes(order.status)) {
             const carrier =
               (action.carrier as string) || 'INTERNAL_MOCK_CARRIER';
-            await this.prisma.shipment.upsert({
-              where: { orderId: order.id },
-              create: { orderId: order.id, carrier },
-              update: { carrier: order.shipment?.carrier ? undefined : carrier },
-            });
+            // Keep in-memory shipment in sync so later rules do not overwrite.
+            if (!order.shipment?.carrier) {
+              const shipment = await this.prisma.shipment.upsert({
+                where: { orderId: order.id },
+                create: { orderId: order.id, carrier },
+                update: { carrier },
+              });
+              order.shipment = shipment;
+              actions.push(`SUGGEST_CARRIER:${rule.name}:${carrier}`);
+            }
             if (order.status === 'APPROVED') {
               await this.prisma.order.update({
                 where: { id: order.id },
@@ -240,7 +205,6 @@ export class OrdersService implements OnModuleInit {
               });
               order.status = 'AWAITING_SHIPMENT';
             }
-            actions.push(`SUGGEST_CARRIER:${rule.name}:${carrier}`);
           }
         }
       }

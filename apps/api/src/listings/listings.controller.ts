@@ -7,7 +7,10 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { UserRole } from '@prisma/client';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
 import { CurrentUser } from '../auth/current-user.decorator';
 import {
   AdvanceListingDto,
@@ -17,21 +20,24 @@ import {
 import { ListingsService } from './listings.service';
 
 @Controller('listings')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class ListingsController {
   constructor(private readonly listings: ListingsService) {}
 
   @Get()
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.OPERATOR)
   list(@Query('productId') productId?: string) {
     return this.listings.list(productId);
   }
 
   @Get(':id')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.OPERATOR)
   get(@Param('id') id: string) {
     return this.listings.get(id);
   }
 
   @Post()
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.OPERATOR)
   create(
     @Body() dto: CreateListingDto,
     @CurrentUser() user: { sub: string },
@@ -40,6 +46,7 @@ export class ListingsController {
   }
 
   @Post(':id/advance')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.OPERATOR)
   advance(
     @Param('id') id: string,
     @Body() dto: AdvanceListingDto,
@@ -49,6 +56,7 @@ export class ListingsController {
   }
 
   @Post(':id/publish')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.OPERATOR)
   publish(
     @Param('id') id: string,
     @Body() dto: PublishListingDto,
