@@ -1,4 +1,4 @@
-version: 1
+version: 2
 updated_at: "2026-09-26T06:11:00Z"
 tasks:
   - id: TASK-001
@@ -31,15 +31,17 @@ tasks:
     dependencies: [TASK-001, TASK-003]
     risk: low
     blocker: null
-    notes: "API NestJS+Prisma+PG 已落地；Vue web 尚未初始化"
+    notes: "API NestJS+Prisma+PG 已落地；Vue web 为 Vite scaffold，业务 console 未完成"
     completion_evidence:
       - /workspace/project/apps/api
+      - /workspace/project/apps/web
   - id: TASK-005
     title: 第一条本地真实闭环（商品→订单→审单→发货→库存→审计）
     state: DONE
     dependencies: [TASK-004]
     risk: medium
     blocker: null
+    notes: "本地 PostgreSQL + synthetic/local records；不代表 Ozon/carrier live"
     completion_evidence:
       - /workspace/project/evidence/first-loop-2026-09-26T06-10-54-946Z.json
       - /workspace/project/apps/api/scripts/e2e-local-loop.mjs
@@ -49,15 +51,28 @@ tasks:
     dependencies: [TASK-004]
     risk: high
     blocker: BLK-OZON-001
+    notes: "保持 NOT_CONFIGURED；无 Client-Id/Api-Key 与读写授权"
   - id: TASK-007
     title: PRD+ACCEPTANCE（依赖业务事实）
     state: BLOCKED
     dependencies: [TASK-002]
     risk: medium
     blocker: BLK-BIZ-001
+    notes: "已交付 provisional docs；正式业务验收仍被缺失的公司/问题/范围/成功标准阻断"
+    completion_evidence:
+      - /workspace/project/docs/PRD.md
+      - /workspace/project/docs/ACCEPTANCE.md
   - id: TASK-008
     title: Vue web 对接本地 API（选品/刊登/订单/发货）
-    state: TODO
+    state: RUNNING
     dependencies: [TASK-005]
     risk: low
     blocker: null
+    notes: "apps/web 仍为 scaffold；console 与真实 loading/error/empty states 待实现"
+  - id: TASK-009
+    title: 规则 CRUD 与 ADMIN/MANAGER/OPERATOR 角色权限
+    state: RUNNING
+    dependencies: [TASK-004, TASK-005]
+    risk: medium
+    blocker: null
+    notes: "规则 schema/default run 已存在；CRUD 与 server-side role enforcement 尚无证据"
