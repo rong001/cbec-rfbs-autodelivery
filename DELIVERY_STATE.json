@@ -1,9 +1,9 @@
 {
   "phase": "E_local_plus_pages_demo",
-  "status": "local_console_ready_github_pages_demo_authorized",
-  "updated_at": "2026-09-28T02:59:23Z",
+  "status": "github_pages_demo_live",
+  "updated_at": "2026-09-28T03:06:09Z",
   "project_root": "/workspace/project",
-  "code_version": "c5e7fa78a37689bfe21847a9b01410c1997d7471",
+  "code_version": "08e7c6d1e0cc9f4804f1e967308ac13a51ba46f0",
   "runtime": {
     "api": "http://127.0.0.1:3200 (NestJS+Prisma+Rules+RBAC+Ozon skeleton)",
     "web": "http://127.0.0.1:3201 (Vue3+Arco, includes /rules)",
@@ -74,7 +74,7 @@
       "notes": "staging/production server still not authorized; Pages static demo is authorized"
     }
   ],
-  "next_action": "Await BLK-BIZ-001 and/or BLK-OZON-001; Pages demo live when Actions succeeds",
+  "next_action": "Await BLK-BIZ-001 and/or BLK-OZON-001; Pages demo is live",
   "evidence_dir": "/workspace/project/evidence",
   "rules_rbac": {
     "passed": true,
@@ -93,10 +93,18 @@
   "github_pages": {
     "authorized": true,
     "authorized_at": "2026-09-28",
-    "repo": "rong001/cbec-rfbs-autodelivery",
+    "repo": "https://github.com/rong001/cbec-rfbs-autodelivery",
     "url": "https://rong001.github.io/cbec-rfbs-autodelivery/",
+    "http_status": 200,
     "mode": "static_demo_adapter",
+    "deploy": "gh-pages branch",
+    "gh_pages_commit": "2dbabc6",
+    "main_commit": "08e7c6d1e0cc9f4804f1e967308ac13a51ba46f0",
     "ozon": "NOT_CONFIGURED",
-    "note": "Pages hosts Vue demo only; Nest/Postgres remain local"
+    "demo_login": "demo@local.dev / Demo123!",
+    "screenshots": [
+      "evidence/pages-demo-login.png",
+      "evidence/pages-demo-dashboard.png"
+    ]
   }
 }
