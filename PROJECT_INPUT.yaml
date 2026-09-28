@@ -119,3 +119,15 @@ technical_assumptions:
     Ozon 真实读写保持 BLOCKED until credentials + write auth.
 
 # Decision 2026-09-26: user skipped direction widget; proceeding with provisional Ozon rFBS midplatform (ozonflow-derived). Formal company rules remain missing.
+
+# --- amendment 2026-09-28 ---
+deploy_authorization_amendment:
+  github_pages_demo:
+    status: confirmed
+    authorized_at: "2026-09-28"
+    scope: "static frontend only via GitHub Pages; no staging/production server"
+    repo: "rong001/cbec-rfbs-autodelivery"
+    note: "Nest API + Postgres remain local; public site uses demo adapter"
+  staging_deploy: false
+  production_deploy: false
+  ozon_live: false

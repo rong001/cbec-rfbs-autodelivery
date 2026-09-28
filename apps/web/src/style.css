@@ -1,15 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
 :root {
   color-scheme: light;
-  font-family: "PingFang SC", "Noto Sans SC", "Segoe UI", system-ui, sans-serif;
+  font-family: "IBM Plex Sans", "Source Sans 3", "PingFang SC", "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   color: #1d2129;
-  background: #f2f3f5;
+  background: #f2f4f7;
+  --accent: #165dff;
+  --border: #e5e6eb;
 }
 
 * { box-sizing: border-box; }
 html, body, #app { margin: 0; min-height: 100%; }
-body { background: #f2f3f5; }
+body { background: #f2f4f7; }
 
 .page {
   display: flex;
@@ -29,6 +33,7 @@ body { background: #f2f3f5; }
   margin: 0;
   font-size: 20px;
   font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .muted { color: #86909c; font-size: 13px; }
@@ -74,4 +79,12 @@ body { background: #f2f3f5; }
   gap: 8px;
   flex-wrap: wrap;
 }
-.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+}
+
+.arco-card {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}

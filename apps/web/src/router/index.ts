@@ -1,8 +1,9 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import { getToken } from '../api/client'
+import { isDemoMode } from '../demo'
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes: [
     {
       path: '/login',
@@ -36,3 +37,6 @@ router.beforeEach((to) => {
 })
 
 export default router
+
+// Re-export for layout consumers
+export { isDemoMode }

@@ -1,7 +1,7 @@
 {
-  "phase": "E_local",
-  "status": "local_ops_console_ready_platform_blocked",
-  "updated_at": "2026-09-26T06:20:00Z",
+  "phase": "E_local_plus_pages_demo",
+  "status": "local_console_ready_github_pages_demo_authorized",
+  "updated_at": "2026-09-28T02:59:23Z",
   "project_root": "/workspace/project",
   "code_version": "8553136b9a3b68f45a94959cc7977a028eb3f2d4",
   "runtime": {
@@ -66,13 +66,15 @@
         "阶段 H/I"
       ],
       "done_without_it": [
-        "本地可运行交付与部署脚本"
+        "本地可运行交付与部署脚本",
+        "GitHub Pages static demo (authorized 2026-09-28)"
       ],
       "user_min_action": "提供环境或写明尚无，接受仅本地交付",
-      "resume": "有授权再预发布"
+      "resume": "有授权再预发布",
+      "notes": "staging/production server still not authorized; Pages static demo is authorized"
     }
   ],
-  "next_action": "Await BLK-BIZ-001 and/or BLK-OZON-001; local console usable now",
+  "next_action": "Await BLK-BIZ-001 and/or BLK-OZON-001; Pages demo live when Actions succeeds",
   "evidence_dir": "/workspace/project/evidence",
   "rules_rbac": {
     "passed": true,
@@ -87,5 +89,14 @@
     ],
     "operator_forbidden_on_rules_write": true
   },
-  "report": "docs/DELIVERY_REPORT.md"
+  "report": "docs/DELIVERY_REPORT.md",
+  "github_pages": {
+    "authorized": true,
+    "authorized_at": "2026-09-28",
+    "repo": "rong001/cbec-rfbs-autodelivery",
+    "url": "https://rong001.github.io/cbec-rfbs-autodelivery/",
+    "mode": "static_demo_adapter",
+    "ozon": "NOT_CONFIGURED",
+    "note": "Pages hosts Vue demo only; Nest/Postgres remain local"
+  }
 }

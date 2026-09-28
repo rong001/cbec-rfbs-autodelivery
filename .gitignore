@@ -11,3 +11,4 @@ evidence/tmp/
 apps/api/node_modules/
 apps/api/dist/
 apps/api/coverage/
+apps/web/dist/

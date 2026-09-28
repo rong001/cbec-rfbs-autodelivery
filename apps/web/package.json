@@ -7,7 +7,11 @@
     "dev": "vite --host 127.0.0.1 --port 3201",
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview",
-    "smoke": "node scripts/smoke-ui-api.mjs"
+    "smoke": "node scripts/smoke-ui-api.mjs",
+    "build:demo": "vue-tsc -b && VITE_DEMO=true vite build",
+    "preview:demo": "VITE_DEMO=true vite preview --host 127.0.0.1 --port 4173",
+    "dev:demo": "VITE_DEMO=true vite --host 127.0.0.1 --port 3201",
+    "smoke:demo": "npx --yes tsx scripts/smoke-demo.ts"
   },
   "dependencies": {
     "@arco-design/web-vue": "^2.58.0",

@@ -1,0 +1,46 @@
+{
+  "at": "2026-09-28T02:54:33.028Z",
+  "api": "http://127.0.0.1:3200",
+  "ok": true,
+  "steps": [
+    {
+      "health": {
+        "status": "ready",
+        "db": "up",
+        "ts": "2026-09-28T02:59:40.436Z"
+      }
+    },
+    {
+      "login": "admin@local.dev"
+    },
+    {
+      "shop": "created",
+      "id": "cmuknsubq00179yhlgda4g2yf"
+    },
+    {
+      "claim": "ok",
+      "sku": "SEED-USB-01",
+      "listingId": "cmuknsuck001e9yhln63ufllx"
+    },
+    {
+      "claim": "ok",
+      "sku": "SEED-CLIP-02",
+      "listingId": "cmuknsudt001u9yhl8nzpli6p"
+    },
+    {
+      "claim": "ok",
+      "sku": "SEED-HUB-03",
+      "listingId": "cmuknsuel002a9yhlnpfraa6o"
+    },
+    {
+      "order": "SEED-ORD-MUKNSUFU",
+      "status": "PENDING_REVIEW"
+    }
+  ],
+  "counts": {
+    "shops": 7,
+    "products": 9,
+    "orders": 7,
+    "inventory": 9
+  }
+}

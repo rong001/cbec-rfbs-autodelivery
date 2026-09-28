@@ -1,35 +1,11 @@
-import type { ApiErrorBody } from './types'
+import { ApiError, formatErrorBody } from './errors'
+import { demoRequest, isDemoMode } from '../demo'
+
+export { ApiError, formatErrorBody }
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:3200'
 const TOKEN_KEY = 'cbec_access_token'
 const USER_KEY = 'cbec_user'
-
-export class ApiError extends Error {
-  status: number
-  body: unknown
-
-  constructor(status: number, body: unknown) {
-    const msg = formatErrorBody(body)
-    super(msg)
-    this.name = 'ApiError'
-    this.status = status
-    this.body = body
-  }
-}
-
-export function formatErrorBody(body: unknown): string {
-  if (body == null) return '请求失败'
-  if (typeof body === 'string') return body
-  const b = body as ApiErrorBody
-  if (Array.isArray(b.message)) return b.message.join('; ')
-  if (typeof b.message === 'string') return b.message
-  if (typeof b.error === 'string') return b.error
-  try {
-    return JSON.stringify(body)
-  } catch {
-    return '请求失败'
-  }
-}
 
 export function getToken(): string | null {
   return localStorage.getItem(TOKEN_KEY)
@@ -59,6 +35,10 @@ export async function api<T = unknown>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {
+  if (isDemoMode()) {
+    return demoRequest<T>(path, options)
+  }
+
   const headers = new Headers(options.headers || {})
   if (!headers.has('Content-Type') && options.body) {
     headers.set('Content-Type', 'application/json')

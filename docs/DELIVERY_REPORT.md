@@ -67,3 +67,13 @@ node apps/api/scripts/e2e-local-loop.mjs
 ```
 
 Database URL is in `/workspace/project/.env` (gitignored).
+
+---
+
+## Update 2026-09-28 — GitHub Pages demo (authorized)
+
+- User authorized permanent **GitHub Pages** static demo (not staging/production server).
+- `apps/web` demo adapter + 3 datasets; `VITE_DEMO=true` builds offline.
+- Public URL: `https://rong001.github.io/cbec-rfbs-autodelivery/`
+- Ozon remains **NOT_CONFIGURED**; business PRD still provisional.
+- Design note: `docs/DEMO_FRONTEND.md`
