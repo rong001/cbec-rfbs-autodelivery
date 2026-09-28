@@ -6,6 +6,8 @@
 Vue 3 + Vite + Arco Design 运营工作台；本地可接 NestJS + Prisma + Postgres 做闭环。  
 GitHub Pages 仅托管 **静态前端 + 浏览器内演示适配器**（无 API / 无数据库）。
 
+部署方式：`gh-pages` 分支静态产物（`VITE_DEMO=true`）。可选 Actions 工作流见 `docs/github/pages.workflow.yml`（需 `workflow` scope 才能写入 `.github/workflows`）。
+
 ## Live Demo（GitHub Pages）
 
 **https://rong001.github.io/cbec-rfbs-autodelivery/**

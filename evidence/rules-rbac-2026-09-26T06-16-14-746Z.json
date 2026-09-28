@@ -1,0 +1,148 @@
+{
+  "startedAt": "2026-09-26T06:16:14.747Z",
+  "baseUrl": "http://127.0.0.1:3200",
+  "ok": false,
+  "reqIds": [
+    "REQ-RULE-001",
+    "REQ-RBAC-001"
+  ],
+  "steps": [
+    {
+      "name": "health.ready",
+      "ok": true,
+      "at": "2026-09-26T06:16:14.812Z",
+      "detail": {
+        "status": "ready",
+        "db": "up",
+        "ts": "2026-09-26T06:16:14.803Z"
+      }
+    },
+    {
+      "name": "auth.admin.login",
+      "ok": true,
+      "at": "2026-09-26T06:16:14.903Z",
+      "detail": {
+        "role": "ADMIN"
+      }
+    },
+    {
+      "name": "rules.list.defaults",
+      "ok": true,
+      "at": "2026-09-26T06:16:14.908Z",
+      "detail": {
+        "count": 4,
+        "names": [
+          "e2e-force-carrier-1790403368440",
+          "auto-approve-pending",
+          "mark-procurement-if-low-stock",
+          "suggest-carrier-internal"
+        ]
+      }
+    },
+    {
+      "name": "rules.create",
+      "ok": true,
+      "at": "2026-09-26T06:16:14.915Z",
+      "detail": {
+        "id": "cmuhzxxkw0013z3yupzldik12",
+        "name": "e2e-force-carrier-1790403374908",
+        "priority": 12
+      }
+    },
+    {
+      "name": "rules.disable",
+      "ok": true,
+      "at": "2026-09-26T06:16:14.921Z",
+      "detail": {
+        "enabled": false
+      }
+    },
+    {
+      "name": "rules.enable",
+      "ok": true,
+      "at": "2026-09-26T06:16:14.927Z",
+      "detail": {
+        "enabled": true
+      }
+    },
+    {
+      "name": "orders.create.for-rules",
+      "ok": true,
+      "at": "2026-09-26T06:16:14.970Z",
+      "detail": {
+        "orderId": "cmuhzxxmd001uz3yum725esr3",
+        "status": "PENDING_REVIEW"
+      }
+    },
+    {
+      "name": "orders.run-rules.hit-new-rule",
+      "ok": true,
+      "at": "2026-09-26T06:16:14.987Z",
+      "detail": {
+        "appliedForOrder": {
+          "orderId": "cmuhzxxmd001uz3yum725esr3",
+          "actions": [
+            "AUTO_APPROVE:auto-approve-pending",
+            "SUGGEST_CARRIER:e2e-force-carrier-1790403374908:E2E_RULES_CARRIER",
+            "SUGGEST_CARRIER:suggest-carrier-internal:INTERNAL_MOCK_CARRIER"
+          ]
+        }
+      }
+    },
+    {
+      "name": "orders.carrier.from-rule",
+      "ok": false,
+      "at": "2026-09-26T06:16:14.992Z",
+      "detail": {
+        "expected": "E2E_RULES_CARRIER",
+        "actual": "INTERNAL_MOCK_CARRIER",
+        "order": {
+          "id": "cmuhzxxmd001uz3yum725esr3",
+          "shopId": "cmuhzxxld001az3yuzk8vzmu7",
+          "orderNo": "LOC-1790403374965-3V4I4",
+          "status": "AWAITING_SHIPMENT",
+          "totalAmount": "100",
+          "currency": "RUB",
+          "buyerNote": null,
+          "etaHours": null,
+          "createdAt": "2026-09-26T06:16:14.966Z",
+          "updatedAt": "2026-09-26T06:16:14.983Z",
+          "lines": [
+            {
+              "id": "cmuhzxxmd001wz3yuapoavjkn",
+              "orderId": "cmuhzxxmd001uz3yum725esr3",
+              "productId": "cmuhzxxlj001fz3yujkw5tbs0",
+              "sku": "SKU-RBAC-1790403374932",
+              "qty": 1,
+              "unitPrice": "100"
+            }
+          ],
+          "shipment": {
+            "id": "cmuhzxxmt0026z3yu5sacg37q",
+            "orderId": "cmuhzxxmd001uz3yum725esr3",
+            "trackingNo": null,
+            "carrier": "INTERNAL_MOCK_CARRIER",
+            "labeledAt": null,
+            "shippedAt": null,
+            "createdAt": "2026-09-26T06:16:14.982Z",
+            "updatedAt": "2026-09-26T06:16:14.985Z"
+          },
+          "shop": {
+            "id": "cmuhzxxld001az3yuzk8vzmu7",
+            "name": "RBAC Shop 1790403374927",
+            "platform": "OZON_RFBS",
+            "externalShopId": null,
+            "status": "ACTIVE",
+            "createdAt": "2026-09-26T06:16:14.929Z",
+            "updatedAt": "2026-09-26T06:16:14.929Z"
+          }
+        }
+      }
+    }
+  ],
+  "honesty": {
+    "ozonLive": false,
+    "domain": "provisional Ozon rFBS midplatform"
+  },
+  "finishedAt": "2026-09-26T06:16:14.992Z"
+}
