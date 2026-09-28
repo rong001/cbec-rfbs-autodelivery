@@ -47,6 +47,9 @@ onUnmounted(() => unsub?.())
 
 const selected = computed(() => [route.name as string])
 
+/** Richer chrome on dashboard; quieter ops pages so content wins */
+const isOps = computed(() => route.name !== 'dashboard')
+
 const menus = [
   { key: 'dashboard', label: '总览', icon: () => h(IconDashboard) },
   { key: 'shops', label: '店铺', icon: () => h(IconHome) },
@@ -85,22 +88,22 @@ function onResetDataset() {
 </script>
 
 <template>
-  <a-layout class="app-shell">
+  <a-layout class="app-shell" :class="{ 'is-ops': isOps }">
     <div class="aurora" aria-hidden="true"><span class="aurora-mid" /></div>
     <a-layout-sider
       collapsible
       :collapsed="collapsed"
       @collapse="collapsed = $event"
-      :width="232"
+      :width="224"
       class="sider"
     >
       <div class="brand">
-        <div class="brand-mark breathe" :class="{ compact: collapsed }">
+        <div class="brand-mark" :class="{ compact: collapsed, breathe: !isOps }">
           <span class="brand-glyph">跨境</span>
         </div>
         <div v-if="!collapsed" class="brand-copy">
           <strong>跨境自动履约</strong>
-          <span v-if="demo" class="brand-sub">DEMO 产品控制台</span>
+          <span v-if="demo" class="brand-sub">DEMO · 运营控制台</span>
         </div>
       </div>
       <a-menu
@@ -119,7 +122,7 @@ function onResetDataset() {
       <a-layout-header class="topbar">
         <div class="top-left">
           <span class="honesty-chip">
-            <span class="honesty-dot breathe-soft" />
+            <span class="honesty-dot" :class="{ 'breathe-soft': !isOps }" />
             演示数据 · DEMO
           </span>
           <span class="muted honesty">
@@ -171,35 +174,35 @@ function onResetDataset() {
   z-index: 1;
 }
 .sider {
-  background: linear-gradient(180deg, #0B1220 0%, #101827 55%, #0B1220 100%) !important;
-  box-shadow: 4px 0 24px rgba(11, 18, 32, 0.18);
+  background: linear-gradient(180deg, #0B1220 0%, #0F172A 55%, #0B1220 100%) !important;
+  box-shadow: 1px 0 0 rgba(15, 23, 42, 0.2);
   z-index: 2;
 }
 .brand {
-  min-height: 72px;
+  min-height: 64px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px 16px 12px;
+  gap: 11px;
+  padding: 14px 14px 10px;
   color: #fff;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
 }
 .brand-mark {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  background: linear-gradient(135deg, #3B82F6, #22D3EE);
+  background: linear-gradient(135deg, #3B82F6, #2563EB 60%, #0EA5E9);
   color: #fff;
   font-weight: 700;
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: -0.02em;
 }
 .brand-mark.compact {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   margin: 0 auto;
 }
 .brand-glyph { transform: scale(0.92); }
@@ -210,18 +213,19 @@ function onResetDataset() {
   min-width: 0;
 }
 .brand-copy strong {
-  font-size: 14px;
+  font-size: 13.5px;
   letter-spacing: -0.01em;
   white-space: nowrap;
+  font-weight: 650;
 }
 .brand-sub {
   font-size: 11px;
-  color: rgba(148, 163, 184, 0.9);
+  color: rgba(148, 163, 184, 0.85);
   font-weight: 500;
 }
 .sider-menu {
   background: transparent !important;
-  padding: 10px 8px;
+  padding: 8px 8px;
 }
 .menu-ico { margin-right: 8px; }
 
@@ -229,74 +233,74 @@ function onResetDataset() {
   position: sticky;
   top: 0;
   z-index: 5;
-  background: rgba(255, 255, 255, 0.72) !important;
-  backdrop-filter: blur(16px) saturate(1.2);
-  -webkit-backdrop-filter: blur(16px) saturate(1.2);
-  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  background: rgba(255, 255, 255, 0.82) !important;
+  backdrop-filter: blur(14px) saturate(1.15);
+  -webkit-backdrop-filter: blur(14px) saturate(1.15);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.07);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 22px;
-  height: 60px;
+  padding: 0 20px;
+  height: 52px;
   gap: 12px;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset;
 }
 .top-left {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   min-width: 0;
 }
 .honesty-chip {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 4px 10px 4px 8px;
+  gap: 6px;
+  padding: 3px 9px 3px 7px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 650;
   color: #92400E;
-  background: linear-gradient(90deg, rgba(245, 158, 11, 0.16), rgba(34, 211, 238, 0.1));
-  border: 1px solid rgba(245, 158, 11, 0.28);
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.26);
   white-space: nowrap;
 }
 .honesty-dot {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: #F59E0B;
-  box-shadow: 0 0 8px rgba(245, 158, 11, 0.7);
 }
 .honesty {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: 12px;
 }
 .top-right {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-shrink: 0;
 }
 .user-email {
-  color: #475569;
-  max-width: 180px;
+  color: #64748B;
+  max-width: 160px;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: 11.5px;
 }
 .content {
-  padding: 22px 24px 32px;
+  padding: 18px 20px 28px;
   position: relative;
   z-index: 1;
 }
 
 .dataset-control {
   display: inline-flex;
-  padding: 3px;
-  border-radius: 12px;
+  padding: 2px;
+  border-radius: 8px;
   background: rgba(15, 23, 42, 0.04);
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  gap: 2px;
+  border: 1px solid rgba(15, 23, 42, 0.07);
+  gap: 1px;
 }
 .dataset-pill {
   appearance: none;
@@ -304,33 +308,34 @@ function onResetDataset() {
   background: transparent;
   color: #64748B;
   font: inherit;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 600;
-  padding: 6px 10px;
-  border-radius: 9px;
+  padding: 5px 9px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 120ms ease;
+  transition: background 140ms ease, color 140ms ease, box-shadow 140ms ease;
   white-space: nowrap;
 }
 .dataset-pill:hover {
   color: #0F172A;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.8);
 }
 .dataset-pill.active {
   color: #fff;
-  background: linear-gradient(135deg, #3B82F6, #2563EB 60%, #0EA5E9);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+  background: #3B82F6;
+  box-shadow: 0 1px 3px rgba(37, 99, 235, 0.28);
 }
 .dataset-pill:active { transform: scale(0.98); }
 
 .ghost-btn {
-  border-radius: 10px !important;
+  border-radius: 8px !important;
 }
 
 :deep(.arco-layout-sider-trigger) {
   background: #121A2B !important;
   color: #93C5FD !important;
-  border-top: 1px solid rgba(148, 163, 184, 0.12);
+  border-top: 1px solid rgba(148, 163, 184, 0.1);
+  height: 40px !important;
 }
 :deep(.arco-menu-dark),
 :deep(.arco-menu-dark .arco-menu-inner) {
@@ -338,24 +343,27 @@ function onResetDataset() {
 }
 :deep(.arco-menu-dark .arco-menu-item) {
   background: transparent;
-  border-radius: 10px;
-  margin: 2px 0;
-  color: rgba(226, 232, 240, 0.82);
-  transition: background 160ms ease, color 160ms ease, box-shadow 160ms ease;
+  border-radius: 8px;
+  margin: 1px 0;
+  color: rgba(226, 232, 240, 0.78);
+  transition: background 140ms ease, color 140ms ease;
+  height: 38px;
+  line-height: 38px;
+  font-size: 13px;
 }
 :deep(.arco-menu-dark .arco-menu-item:hover) {
-  background: rgba(59, 130, 246, 0.12);
+  background: rgba(59, 130, 246, 0.1);
   color: #fff;
 }
 :deep(.arco-menu-dark .arco-menu-item.arco-menu-selected) {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.95), rgba(14, 165, 233, 0.85)) !important;
+  background: rgba(59, 130, 246, 0.92) !important;
   color: #fff !important;
-  box-shadow: 0 0 0 1px rgba(147, 197, 253, 0.25), 0 8px 22px rgba(59, 130, 246, 0.35);
+  box-shadow: none;
   font-weight: 600;
 }
 
 @media (max-width: 1100px) {
   .honesty { display: none; }
-  .dataset-pill { padding: 6px 8px; font-size: 11px; }
+  .dataset-pill { padding: 5px 7px; font-size: 11px; }
 }
 </style>

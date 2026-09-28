@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { apiGet, apiPost, ApiError, formatErrorBody } from '../api/client'
 import type { Order, Product, Shop } from '../api/types'
+import StatusTag from '../components/StatusTag.vue'
+import OpsEmpty from '../components/OpsEmpty.vue'
+import TableSkeleton from '../components/TableSkeleton.vue'
 
 const rows = ref<Order[]>([])
 const shops = ref<Shop[]>([])
@@ -12,6 +15,7 @@ const success = ref<string | null>(null)
 const creating = ref(false)
 const runningRules = ref(false)
 const approvingId = ref<string | null>(null)
+const statusFilter = ref<string>('ALL')
 
 const form = reactive({
   shopId: '',
@@ -21,6 +25,13 @@ const form = reactive({
   buyerNote: '',
   orderNo: '',
 })
+
+const filtered = computed(() => {
+  if (statusFilter.value === 'ALL') return rows.value
+  return rows.value.filter((o) => o.status === statusFilter.value)
+})
+
+const pendingCount = computed(() => rows.value.filter((o) => o.status === 'PENDING_REVIEW').length)
 
 async function load() {
   loading.value = true
@@ -106,13 +117,19 @@ onMounted(load)
 <template>
   <div class="page">
     <div class="page-header">
-      <h2>审单</h2>
-      <a-space>
+      <div class="page-header-main">
+        <h2>审单</h2>
+        <div class="page-meta">
+          待审 {{ pendingCount }} · 全量 {{ rows.length }}
+          — 审批后进入待发 / 待采队列
+        </div>
+      </div>
+      <div class="page-actions">
         <a-button type="outline" :loading="runningRules" :disabled="runningRules" @click="runRules">
           运行规则
         </a-button>
-        <a-button :loading="loading" @click="load">刷新</a-button>
-      </a-space>
+        <a-button type="primary" :loading="loading" @click="load">刷新</a-button>
+      </div>
     </div>
     <div v-if="error" class="err-box">{{ error }}</div>
     <div v-if="success" class="ok-box">{{ success }}</div>
@@ -157,19 +174,49 @@ onMounted(load)
     </a-card>
 
     <a-card title="订单列表">
-      <a-table :data="rows" :loading="loading" row-key="id" :pagination="{ pageSize: 20 }">
+      <div class="toolbar" style="margin-bottom: 10px">
+        <span class="muted" style="font-size:12px;font-weight:600">状态</span>
+        <a-radio-group v-model="statusFilter" type="button" size="small">
+          <a-radio value="ALL">全部</a-radio>
+          <a-radio value="PENDING_REVIEW">待审</a-radio>
+          <a-radio value="APPROVED">已审</a-radio>
+          <a-radio value="AWAITING_SHIPMENT">待发</a-radio>
+          <a-radio value="SHIPPED">已发</a-radio>
+          <a-radio value="PENDING_PROCUREMENT">待采</a-radio>
+        </a-radio-group>
+      </div>
+
+      <TableSkeleton v-if="loading && !rows.length" :rows="7" :cols="6" />
+      <a-table
+        v-else
+        :data="filtered"
+        :loading="loading"
+        row-key="id"
+        :pagination="{ pageSize: 20, showTotal: true }"
+        :bordered="false"
+        size="small"
+      >
         <template #columns>
-          <a-table-column title="单号" data-index="orderNo" />
-          <a-table-column title="状态" data-index="status">
+          <a-table-column title="单号" data-index="orderNo">
             <template #cell="{ record }">
-              <a-tag>{{ record.status }}</a-tag>
+              <span class="mono">{{ record.orderNo }}</span>
             </template>
           </a-table-column>
-          <a-table-column title="金额">
-            <template #cell="{ record }">{{ record.totalAmount }} {{ record.currency }}</template>
+          <a-table-column title="状态" :width="100">
+            <template #cell="{ record }">
+              <StatusTag :value="record.status" />
+            </template>
           </a-table-column>
-          <a-table-column title="行数">
-            <template #cell="{ record }">{{ record.lines?.length ?? 0 }}</template>
+          <a-table-column title="金额" :width="120" align="right">
+            <template #cell="{ record }">
+              <span class="tabular">{{ record.totalAmount }}</span>
+              <span class="muted"> {{ record.currency }}</span>
+            </template>
+          </a-table-column>
+          <a-table-column title="行数" :width="64" align="right">
+            <template #cell="{ record }">
+              <span class="tabular">{{ record.lines?.length ?? 0 }}</span>
+            </template>
           </a-table-column>
           <a-table-column title="物流">
             <template #cell="{ record }">
@@ -177,11 +224,11 @@ onMounted(load)
               <span v-else class="muted">—</span>
             </template>
           </a-table-column>
-          <a-table-column title="ID" data-index="id" :width="180" />
-          <a-table-column title="操作" :width="120">
+          <a-table-column title="操作" :width="100">
             <template #cell="{ record }">
               <a-button
                 size="mini"
+                type="primary"
                 :loading="approvingId === record.id"
                 :disabled="approvingId === record.id || record.status !== 'PENDING_REVIEW'"
                 @click="approve(record)"
@@ -192,7 +239,7 @@ onMounted(load)
           </a-table-column>
         </template>
         <template #empty>
-          <a-empty description="暂无订单（空）" />
+          <OpsEmpty title="暂无订单" description="创建订单或切换演示集后，待审队列将显示在此。" />
         </template>
       </a-table>
     </a-card>

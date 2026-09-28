@@ -2,6 +2,9 @@
 import { onMounted, ref } from 'vue'
 import { apiGet, apiPost, ApiError, formatErrorBody } from '../api/client'
 import type { Listing, ListingStatus } from '../api/types'
+import StatusTag from '../components/StatusTag.vue'
+import OpsEmpty from '../components/OpsEmpty.vue'
+import TableSkeleton from '../components/TableSkeleton.vue'
 
 const rows = ref<Listing[]>([])
 const loading = ref(false)
@@ -67,28 +70,39 @@ onMounted(load)
 <template>
   <div class="page">
     <div class="page-header">
-      <h2>刊登</h2>
-      <a-button :loading="loading" @click="load">刷新</a-button>
+      <div class="page-header-main">
+        <h2>刊登</h2>
+        <div class="page-meta">推进路径：草稿 → 映射中 → 就绪 → 发布 · {{ rows.length }} 条</div>
+      </div>
+      <div class="page-actions">
+        <a-button type="primary" :loading="loading" @click="load">刷新</a-button>
+      </div>
     </div>
     <div v-if="error" class="err-box">{{ error }}</div>
     <div v-if="success" class="ok-box">{{ success }}</div>
-    <p class="muted">推进路径：DRAFT → MAPPING → READY，然后调用 publish。</p>
 
     <a-card title="刊登列表">
-      <a-table :data="rows" :loading="loading" row-key="id" :pagination="{ pageSize: 20 }">
+      <TableSkeleton v-if="loading && !rows.length" :rows="6" :cols="4" />
+      <a-table
+        v-else
+        :data="rows"
+        :loading="loading"
+        row-key="id"
+        :pagination="{ pageSize: 20, showTotal: true }"
+        :bordered="false"
+        size="small"
+      >
         <template #columns>
           <a-table-column title="俄文标题" data-index="titleRu" />
-          <a-table-column title="状态" data-index="status">
+          <a-table-column title="状态" :width="100">
+            <template #cell="{ record }"><StatusTag :value="record.status" /></template>
+          </a-table-column>
+          <a-table-column title="SKU" :width="140">
             <template #cell="{ record }">
-              <a-tag>{{ record.status }}</a-tag>
+              <span class="mono">{{ record.product?.sku || '—' }}</span>
             </template>
           </a-table-column>
-          <a-table-column title="SKU">
-            <template #cell="{ record }">{{ record.product?.sku || '—' }}</template>
-          </a-table-column>
-          <a-table-column title="productId" data-index="productId" :width="180" />
-          <a-table-column title="ID" data-index="id" :width="180" />
-          <a-table-column title="操作" :width="220">
+          <a-table-column title="操作" :width="180">
             <template #cell="{ record }">
               <a-space>
                 <a-button
@@ -113,7 +127,7 @@ onMounted(load)
           </a-table-column>
         </template>
         <template #empty>
-          <a-empty description="暂无刊登（空）" />
+          <OpsEmpty title="暂无刊登" description="先在选品认领中生成草稿，再回到此推进与发布。" />
         </template>
       </a-table>
     </a-card>

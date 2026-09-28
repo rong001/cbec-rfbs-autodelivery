@@ -2,6 +2,9 @@
 import { onMounted, reactive, ref } from 'vue'
 import { apiGet, apiPost, ApiError, formatErrorBody } from '../api/client'
 import type { Shop } from '../api/types'
+import StatusTag from '../components/StatusTag.vue'
+import OpsEmpty from '../components/OpsEmpty.vue'
+import TableSkeleton from '../components/TableSkeleton.vue'
 
 const rows = ref<Shop[]>([])
 const loading = ref(false)
@@ -51,22 +54,18 @@ async function createShop() {
 }
 
 onMounted(load)
-
-const columns = [
-  { title: '名称', dataIndex: 'name' },
-  { title: '平台', dataIndex: 'platform' },
-  { title: '状态', dataIndex: 'status' },
-  { title: '外部店铺ID', dataIndex: 'externalShopId' },
-  { title: 'ID', dataIndex: 'id', width: 220 },
-  { title: '创建时间', dataIndex: 'createdAt' },
-]
 </script>
 
 <template>
   <div class="page">
     <div class="page-header">
-      <h2>店铺</h2>
-      <a-button :loading="loading" @click="load">刷新</a-button>
+      <div class="page-header-main">
+        <h2>店铺</h2>
+        <div class="page-meta">接入店铺与平台标识 · {{ rows.length }} 家</div>
+      </div>
+      <div class="page-actions">
+        <a-button type="primary" :loading="loading" @click="load">刷新</a-button>
+      </div>
     </div>
     <div v-if="error" class="err-box">{{ error }}</div>
     <div v-if="success" class="ok-box">{{ success }}</div>
@@ -97,9 +96,34 @@ const columns = [
     </a-card>
 
     <a-card title="店铺列表">
-      <a-table :columns="columns" :data="rows" :loading="loading" row-key="id" :pagination="{ pageSize: 20 }">
+      <TableSkeleton v-if="loading && !rows.length" :rows="4" :cols="5" />
+      <a-table
+        v-else
+        :data="rows"
+        :loading="loading"
+        row-key="id"
+        :pagination="{ pageSize: 20, showTotal: true }"
+        :bordered="false"
+        size="small"
+      >
+        <template #columns>
+          <a-table-column title="名称" data-index="name" />
+          <a-table-column title="平台" data-index="platform">
+            <template #cell="{ record }"><span class="mono">{{ record.platform }}</span></template>
+          </a-table-column>
+          <a-table-column title="状态" :width="90">
+            <template #cell="{ record }"><StatusTag :value="record.status" /></template>
+          </a-table-column>
+          <a-table-column title="外部店铺ID">
+            <template #cell="{ record }">
+              <span v-if="record.externalShopId" class="mono">{{ record.externalShopId }}</span>
+              <span v-else class="muted">—</span>
+            </template>
+          </a-table-column>
+          <a-table-column title="创建时间" data-index="createdAt" :width="180" />
+        </template>
         <template #empty>
-          <a-empty description="暂无店铺（空）" />
+          <OpsEmpty title="暂无店铺" description="创建店铺后可认领商品与接收订单。" />
         </template>
       </a-table>
     </a-card>

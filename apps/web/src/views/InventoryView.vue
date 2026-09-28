@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { apiGet, apiPost, ApiError, formatErrorBody } from '../api/client'
 import type { InventoryItem } from '../api/types'
+import StatusTag from '../components/StatusTag.vue'
+import OpsEmpty from '../components/OpsEmpty.vue'
+import TableSkeleton from '../components/TableSkeleton.vue'
 
 const rows = ref<InventoryItem[]>([])
 const loading = ref(false)
@@ -14,6 +17,8 @@ const form = reactive({
   reason: '',
   reorderPoint: undefined as number | undefined,
 })
+
+const lowCount = computed(() => rows.value.filter((i) => i.qtyOnHand <= i.reorderPoint).length)
 
 async function load() {
   loading.value = true
@@ -54,8 +59,16 @@ onMounted(load)
 <template>
   <div class="page">
     <div class="page-header">
-      <h2>库存</h2>
-      <a-button :loading="loading" @click="load">刷新</a-button>
+      <div class="page-header-main">
+        <h2>库存</h2>
+        <div class="page-meta">
+          {{ rows.length }} 条目 · 预警 {{ lowCount }}
+          — 现有量 ≤ 再订货点视为预警
+        </div>
+      </div>
+      <div class="page-actions">
+        <a-button type="primary" :loading="loading" @click="load">刷新</a-button>
+      </div>
     </div>
     <div v-if="error" class="err-box">{{ error }}</div>
     <div v-if="success" class="ok-box">{{ success }}</div>
@@ -91,23 +104,59 @@ onMounted(load)
     </a-card>
 
     <a-card title="库存列表">
-      <a-table :data="rows" :loading="loading" row-key="id" :pagination="{ pageSize: 20 }">
+      <TableSkeleton v-if="loading && !rows.length" :rows="5" :cols="5" />
+      <a-table
+        v-else
+        :data="rows"
+        :loading="loading"
+        row-key="id"
+        :pagination="{ pageSize: 20, showTotal: true }"
+        :bordered="false"
+        size="small"
+      >
         <template #columns>
-          <a-table-column title="SKU">
-            <template #cell="{ record }">{{ record.product?.sku || '—' }}</template>
+          <a-table-column title="SKU" :width="140">
+            <template #cell="{ record }">
+              <span class="mono">{{ record.product?.sku || '—' }}</span>
+            </template>
           </a-table-column>
           <a-table-column title="标题">
             <template #cell="{ record }">{{ record.product?.title || '—' }}</template>
           </a-table-column>
-          <a-table-column title="现有数量" data-index="qtyOnHand" />
-          <a-table-column title="再订货点" data-index="reorderPoint" />
-          <a-table-column title="productId" data-index="productId" :width="200" />
-          <a-table-column title="更新时间" data-index="updatedAt" />
+          <a-table-column title="现有" :width="88" align="right">
+            <template #cell="{ record }">
+              <span class="tabular" :class="{ 'low-stock': record.qtyOnHand <= record.reorderPoint }">
+                {{ record.qtyOnHand }}
+              </span>
+            </template>
+          </a-table-column>
+          <a-table-column title="再订货点" :width="88" align="right">
+            <template #cell="{ record }"><span class="tabular">{{ record.reorderPoint }}</span></template>
+          </a-table-column>
+          <a-table-column title="状态" :width="90">
+            <template #cell="{ record }">
+              <StatusTag
+                v-if="record.qtyOnHand <= record.reorderPoint"
+                label="预警"
+                tone="warn"
+                :show-code="false"
+              />
+              <StatusTag v-else label="正常" tone="success" :show-code="false" />
+            </template>
+          </a-table-column>
+          <a-table-column title="更新时间" data-index="updatedAt" :width="180" />
         </template>
         <template #empty>
-          <a-empty description="暂无库存（空）" />
+          <OpsEmpty title="暂无库存" description="发布刊登后将自动建立库存条目。" />
         </template>
       </a-table>
     </a-card>
   </div>
 </template>
+
+<style scoped>
+.low-stock {
+  color: #D97706;
+  font-weight: 650;
+}
+</style>

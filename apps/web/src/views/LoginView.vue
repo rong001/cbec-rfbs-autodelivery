@@ -40,10 +40,10 @@ async function onSubmit() {
         </div>
         <h1>跨境自动履约</h1>
         <p class="hero-lead">
-          Ozon rFBS 运营控制台 · 认领、刊登、审单、面单与库存闭环，一屏掌控。
+          Ozon rFBS 运营控制台 · 认领、刊登、审单、面单与库存 — 专业闭环演示。
         </p>
         <ul class="hero-points">
-          <li>蓝冰渐变产品壳 · ToC 质感</li>
+          <li>专业运营密度 · 清晰状态语言</li>
           <li>演示数据集可一键切换</li>
           <li>始终标注：演示数据 · 非实盘</li>
         </ul>

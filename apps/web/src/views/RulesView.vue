@@ -2,6 +2,9 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { apiGet, apiPatch, apiPost, ApiError, formatErrorBody } from '../api/client'
 import type { FulfillmentRule } from '../api/types'
+import StatusTag from '../components/StatusTag.vue'
+import OpsEmpty from '../components/OpsEmpty.vue'
+import TableSkeleton from '../components/TableSkeleton.vue'
 
 const rows = ref<FulfillmentRule[]>([])
 const loading = ref(false)
@@ -116,11 +119,13 @@ onMounted(load)
 <template>
   <div class="page">
     <div class="page-header">
-      <div>
+      <div class="page-header-main">
         <h2>自动化规则</h2>
-        <div class="muted">按优先级执行的本地履约规则；不会调用 Ozon 实盘。</div>
+        <div class="page-meta">按优先级执行的本地履约规则 · 不调用 Ozon 实盘 · {{ rows.length }} 条</div>
       </div>
-      <a-button :loading="loading" @click="load">刷新</a-button>
+      <div class="page-actions">
+        <a-button type="primary" :loading="loading" @click="load">刷新</a-button>
+      </div>
     </div>
 
     <div v-if="error" class="err-box">{{ error }}</div>
@@ -139,15 +144,15 @@ onMounted(load)
         <div class="form-row textarea-row">
           <label>条件 JSON</label>
           <div>
-            <a-textarea v-model="form.conditionJson" :auto-size="{ minRows: 4, maxRows: 10 }" />
-            <div class="muted">示例：{ "status": "PENDING_REVIEW" } 或 { "checkInventory": true }</div>
+            <a-textarea v-model="form.conditionJson" :auto-size="{ minRows: 3, maxRows: 8 }" />
+            <div class="muted" style="margin-top:4px;font-size:12px">示例：{ "status": "PENDING_REVIEW" } 或 { "checkInventory": true }</div>
           </div>
         </div>
         <div class="form-row textarea-row">
           <label>动作 JSON</label>
           <div>
-            <a-textarea v-model="form.actionJson" :auto-size="{ minRows: 4, maxRows: 10 }" />
-            <div class="muted">AUTO_APPROVE：{ "type": "AUTO_APPROVE" }；SUGGEST_CARRIER：{ "type": "SUGGEST_CARRIER", "carrier": "INTERNAL_MOCK_CARRIER" }</div>
+            <a-textarea v-model="form.actionJson" :auto-size="{ minRows: 3, maxRows: 8 }" />
+            <div class="muted" style="margin-top:4px;font-size:12px">AUTO_APPROVE / SUGGEST_CARRIER</div>
           </div>
         </div>
         <div class="form-actions">
@@ -157,17 +162,37 @@ onMounted(load)
     </a-card>
 
     <a-card title="规则列表">
-      <a-table :data="rows" :loading="loading" row-key="id" :pagination="{ pageSize: 20 }">
+      <TableSkeleton v-if="loading && !rows.length" :rows="4" :cols="5" />
+      <a-table
+        v-else
+        :data="rows"
+        :loading="loading"
+        row-key="id"
+        :pagination="{ pageSize: 20, showTotal: true }"
+        :bordered="false"
+        size="small"
+      >
         <template #columns>
           <a-table-column title="名称" data-index="name" />
-          <a-table-column title="优先级" data-index="priority" :width="90" />
-          <a-table-column title="条件" :width="250">
+          <a-table-column title="优先级" :width="80" align="right">
+            <template #cell="{ record }"><span class="tabular">{{ record.priority }}</span></template>
+          </a-table-column>
+          <a-table-column title="条件" :width="220">
             <template #cell="{ record }"><span class="mono json-cell">{{ prettyJson(record.conditionJson) }}</span></template>
           </a-table-column>
-          <a-table-column title="动作" :width="280">
+          <a-table-column title="动作" :width="220">
             <template #cell="{ record }"><span class="mono json-cell">{{ prettyJson(record.actionJson) }}</span></template>
           </a-table-column>
-          <a-table-column title="启用" :width="100">
+          <a-table-column title="状态" :width="90">
+            <template #cell="{ record }">
+              <StatusTag
+                :label="record.enabled ? '启用' : '停用'"
+                :tone="record.enabled ? 'success' : 'neutral'"
+                :show-code="false"
+              />
+            </template>
+          </a-table-column>
+          <a-table-column title="开关" :width="80">
             <template #cell="{ record }">
               <a-switch
                 :model-value="record.enabled"
@@ -177,16 +202,17 @@ onMounted(load)
               />
             </template>
           </a-table-column>
-          <a-table-column title="更新时间" data-index="updatedAt" :width="190" />
         </template>
-        <template #empty><a-empty description="暂无规则（空）" /></template>
+        <template #empty>
+          <OpsEmpty title="暂无规则" description="创建规则后可在审单页「运行规则」触发本地履约逻辑。" />
+        </template>
       </a-table>
     </a-card>
   </div>
 </template>
 
 <style scoped>
-.rule-form { max-width: 960px; }
+.rule-form { max-width: 720px; }
 .textarea-row { align-items: start; }
 .textarea-row > div { min-width: 0; }
 .json-cell {
@@ -194,5 +220,6 @@ onMounted(load)
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-size: 11.5px;
 }
 </style>

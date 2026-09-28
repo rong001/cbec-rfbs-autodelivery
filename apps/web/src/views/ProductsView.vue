@@ -2,6 +2,9 @@
 import { onMounted, reactive, ref } from 'vue'
 import { apiGet, apiPost, ApiError, formatErrorBody } from '../api/client'
 import type { ClaimResult, Product, Shop } from '../api/types'
+import StatusTag from '../components/StatusTag.vue'
+import OpsEmpty from '../components/OpsEmpty.vue'
+import TableSkeleton from '../components/TableSkeleton.vue'
 
 const rows = ref<Product[]>([])
 const shops = ref<Shop[]>([])
@@ -65,28 +68,23 @@ async function claim() {
 }
 
 onMounted(load)
-
-const columns = [
-  { title: 'SKU', dataIndex: 'sku' },
-  { title: '标题', dataIndex: 'title' },
-  { title: '成本CNY', dataIndex: 'costCny' },
-  { title: '重量g', dataIndex: 'weightG' },
-  { title: '状态', dataIndex: 'status' },
-  { title: '店铺ID', dataIndex: 'shopId', width: 180 },
-  { title: 'ID', dataIndex: 'id', width: 200 },
-]
 </script>
 
 <template>
   <div class="page">
     <div class="page-header">
-      <h2>选品认领</h2>
-      <a-button :loading="loading" @click="load">刷新</a-button>
+      <div class="page-header-main">
+        <h2>选品认领</h2>
+        <div class="page-meta">从选品认领并生成刊登草稿 · {{ rows.length }} 个 SKU</div>
+      </div>
+      <div class="page-actions">
+        <a-button type="primary" :loading="loading" @click="load">刷新</a-button>
+      </div>
     </div>
     <div v-if="error" class="err-box">{{ error }}</div>
     <div v-if="success" class="ok-box">{{ success }}</div>
 
-    <a-card title="从选品认领（claim-from-selection）">
+    <a-card title="从选品认领">
       <div class="card-form">
         <div class="form-row">
           <label>店铺</label>
@@ -128,9 +126,33 @@ const columns = [
     </a-card>
 
     <a-card title="商品列表">
-      <a-table :columns="columns" :data="rows" :loading="loading" row-key="id" :pagination="{ pageSize: 20 }">
+      <TableSkeleton v-if="loading && !rows.length" :rows="6" :cols="5" />
+      <a-table
+        v-else
+        :data="rows"
+        :loading="loading"
+        row-key="id"
+        :pagination="{ pageSize: 20, showTotal: true }"
+        :bordered="false"
+        size="small"
+      >
+        <template #columns>
+          <a-table-column title="SKU" data-index="sku">
+            <template #cell="{ record }"><span class="mono">{{ record.sku }}</span></template>
+          </a-table-column>
+          <a-table-column title="标题" data-index="title" />
+          <a-table-column title="成本 CNY" :width="100" align="right">
+            <template #cell="{ record }"><span class="tabular">{{ record.costCny }}</span></template>
+          </a-table-column>
+          <a-table-column title="重量 g" :width="90" align="right">
+            <template #cell="{ record }"><span class="tabular">{{ record.weightG }}</span></template>
+          </a-table-column>
+          <a-table-column title="状态" :width="90">
+            <template #cell="{ record }"><StatusTag :value="record.status" /></template>
+          </a-table-column>
+        </template>
         <template #empty>
-          <a-empty description="暂无商品（空）" />
+          <OpsEmpty title="暂无商品" description="使用上方表单认领选品，将自动生成商品与刊登草稿。" />
         </template>
       </a-table>
     </a-card>

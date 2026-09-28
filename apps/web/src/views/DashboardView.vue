@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { apiGet, ApiError, formatErrorBody } from '../api/client'
 import type { HealthReady, InventoryItem, Order, Product, Shop } from '../api/types'
 import { isDemoMode, listDatasets, getActiveKey } from '../demo'
+import StatusTag from '../components/StatusTag.vue'
 
 const ready = ref<HealthReady | null>(null)
 const shops = ref<Shop[]>([])
@@ -87,11 +88,16 @@ onMounted(load)
 <template>
   <div class="page dash">
     <div class="page-header">
-      <div>
+      <div class="page-header-main">
         <h2>总览</h2>
-        <div class="muted" v-if="datasetLabel">当前演示集：{{ datasetLabel }}</div>
+        <div class="page-meta">
+          运营队列与健康状态一览
+          <template v-if="datasetLabel"> · 当前演示集：{{ datasetLabel }}</template>
+        </div>
       </div>
-      <a-button type="primary" :loading="loading" @click="load">刷新数据</a-button>
+      <div class="page-actions">
+        <a-button type="primary" class="btn-hero" :loading="loading" @click="load">刷新数据</a-button>
+      </div>
     </div>
 
     <div v-if="error" class="err-box">{{ error }}</div>
@@ -99,16 +105,16 @@ onMounted(load)
       演示数据 · DEMO — 非 Ozon 实盘、非生产环境。变更仅保存在本浏览器 localStorage。
     </div>
 
-    <div class="kpi-strip" :class="{ loading }">
+    <div class="kpi-strip">
       <div
         v-for="(c, i) in kpiItems"
         :key="c.label"
-        class="kpi-hero breathe lift"
-        :style="{ animationDelay: `${i * 0.35}s` }"
+        class="kpi-hero lift"
+        :class="{ breathe: i === 0 }"
       >
         <div class="kpi-label">{{ c.label }}</div>
-        <div class="kpi-value">
-          <template v-if="loading && !shops.length"><span class="skeleton-block" style="width:48px;height:28px" /></template>
+        <div class="kpi-value tabular">
+          <template v-if="loading && !shops.length"><span class="skeleton-block" style="width:48px;height:26px" /></template>
           <template v-else>{{ c.value }}</template>
         </div>
         <div class="kpi-hint muted">{{ c.hint }}</div>
@@ -125,19 +131,19 @@ onMounted(load)
         @click="go(q.route)"
       >
         <div class="queue-label">{{ q.label }}</div>
-        <div class="queue-value">{{ loading && !orders.length ? '—' : q.value }}</div>
+        <div class="queue-value tabular">{{ loading && !orders.length ? '—' : q.value }}</div>
         <div class="queue-cta">{{ q.cta }} →</div>
       </button>
     </div>
 
-    <a-row :gutter="16">
+    <a-row :gutter="14">
       <a-col :xs="24" :md="16">
         <a-card title="待办队列摘要" class="panel-card">
-          <a-descriptions :column="2" size="large" bordered>
-            <a-descriptions-item label="已发货">{{ shipped }}</a-descriptions-item>
-            <a-descriptions-item label="待审单">{{ pendingReview }}</a-descriptions-item>
-            <a-descriptions-item label="待发货">{{ awaitingShip }}</a-descriptions-item>
-            <a-descriptions-item label="库存 ≤ 再订货点">{{ lowStock }}</a-descriptions-item>
+          <a-descriptions :column="2" size="medium" bordered>
+            <a-descriptions-item label="已发货"><span class="tabular">{{ shipped }}</span></a-descriptions-item>
+            <a-descriptions-item label="待审单"><span class="tabular">{{ pendingReview }}</span></a-descriptions-item>
+            <a-descriptions-item label="待发货"><span class="tabular">{{ awaitingShip }}</span></a-descriptions-item>
+            <a-descriptions-item label="库存 ≤ 再订货点"><span class="tabular">{{ lowStock }}</span></a-descriptions-item>
           </a-descriptions>
           <div class="muted trail">
             建议路径：审单 → 运行规则 → 打面单 → 发货 → 核对库存与审计。
@@ -149,10 +155,8 @@ onMounted(load)
           <template v-if="ready">
             <a-space direction="vertical" fill size="medium">
               <a-space wrap>
-                <a-tag :color="ready.status === 'ready' ? 'green' : 'red'">{{ ready.status }}</a-tag>
-                <a-tag :color="ready.db === 'up' || ready.db === 'demo-memory' ? 'green' : 'orange'">
-                  db: {{ ready.db }}
-                </a-tag>
+                <StatusTag :value="ready.status" />
+                <StatusTag :value="ready.db" :label="`db · ${ready.db}`" />
               </a-space>
               <span class="muted mono">{{ ready.ts }}</span>
               <div v-if="demo" class="muted">demo-memory = 浏览器内演示存储</div>
@@ -170,108 +174,93 @@ onMounted(load)
 </template>
 
 <style scoped>
-.honesty-banner {
-  border-radius: 12px;
-}
+.honesty-banner { border-radius: 8px; }
 .kpi-strip {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
+  gap: 12px;
 }
 .kpi-hero {
   position: relative;
-  padding: 18px 18px 16px;
-  border-radius: 16px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.92));
-  border: 1px solid transparent;
-  background-clip: padding-box;
-  box-shadow:
-    0 0 0 1px rgba(59, 130, 246, 0.18),
-    0 10px 28px rgba(59, 130, 246, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  padding: 14px 16px 12px;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid rgba(15, 23, 42, 0.07);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03), 0 0 0 1px rgba(59, 130, 246, 0.08);
   overflow: hidden;
   cursor: default;
-  transition: transform 160ms ease, box-shadow 160ms ease;
 }
 .kpi-hero::before {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
-  height: 3px;
+  height: 2px;
   background: linear-gradient(90deg, #3B82F6, #22D3EE);
 }
 .kpi-label {
-  font-size: 13px;
+  font-size: 12px;
   color: #64748B;
   font-weight: 600;
 }
 .kpi-value {
-  margin: 8px 0 4px;
-  font-size: 32px;
+  margin: 6px 0 2px;
+  font-size: 28px;
   font-weight: 700;
   letter-spacing: -0.03em;
   color: #0F172A;
   line-height: 1.1;
-  min-height: 36px;
+  min-height: 32px;
   display: flex;
   align-items: center;
 }
-.kpi-hint { font-size: 12px; }
+.kpi-hint { font-size: 11.5px; }
 
 .queue-strip {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
+  gap: 12px;
 }
 .queue-card {
   appearance: none;
   text-align: left;
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  border-radius: 16px;
-  padding: 16px 16px 14px;
-  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(15, 23, 42, 0.07);
+  border-radius: 12px;
+  padding: 12px 14px 11px;
+  background: #fff;
   cursor: pointer;
-  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
   font: inherit;
 }
 .queue-card:hover {
-  border-color: rgba(59, 130, 246, 0.35);
-  box-shadow: 0 10px 24px rgba(59, 130, 246, 0.12);
+  border-color: rgba(59, 130, 246, 0.28);
 }
-.queue-card:active { transform: scale(0.985); }
-.queue-label { font-size: 13px; color: #64748B; font-weight: 600; }
+.queue-label { font-size: 12px; color: #64748B; font-weight: 600; }
 .queue-value {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 700;
   line-height: 1.25;
-  margin: 6px 0 4px;
+  margin: 4px 0 2px;
   letter-spacing: -0.02em;
 }
 .queue-cta {
   font-size: 12px;
-  font-weight: 650;
+  font-weight: 600;
   color: #3B82F6;
 }
 .tone-electric .queue-value { color: #2563EB; }
-.tone-ice .queue-value { color: #0891B2; }
+.tone-ice .queue-value { color: #0E7490; }
 .tone-warn .queue-value { color: #D97706; }
 .tone-danger .queue-value { color: #DC2626; }
 
 .panel-card { margin-top: 2px; }
-.trail { margin-top: 14px; }
-.health-card { min-height: 180px; }
+.trail { margin-top: 12px; font-size: 12.5px; }
+.health-card { min-height: 160px; }
 .empty-soft { padding: 4px 0; }
 
 @media (max-width: 960px) {
-  .kpi-strip, .queue-strip {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  .kpi-strip, .queue-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 560px) {
-  .kpi-strip, .queue-strip {
-    grid-template-columns: 1fr;
-  }
+  .kpi-strip, .queue-strip { grid-template-columns: 1fr; }
 }
 </style>

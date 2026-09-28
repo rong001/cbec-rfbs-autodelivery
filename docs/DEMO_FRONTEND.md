@@ -1,101 +1,114 @@
 # Demo Frontend Design Note
 
 **Product:** CBEC Ozon rFBS autodelivery console (Vue 3 + Vite + Arco)  
-**Audience:** ToC-feeling product demo — premium consumer polish on an ops console  
+**Audience:** Professional CBEC ops operators (calm confidence) with a premium ToC product shell  
 **Honesty:** 全部为 **演示数据 / DEMO**。Ozon = `NOT_CONFIGURED`。GitHub Pages 仅托管静态前端，无 Nest API / Postgres。
 
 ## Principles
 
-1. **ToC premium product shell** — Linear / Arc / Apple Music / Stripe consumer polish, NOT dull gray admin chrome.
+1. **Pro-ops first, ToC chrome second** — information hierarchy and dense work queues win on ops pages; brand atmosphere stays on login + dashboard.
 2. **2–3 brand hues only** — deep indigo ink + electric blue + soft cyan ice; semantic success/warn/danger stay muted, never a 4th brand.
-3. **Breathing atmosphere** — ambient gradient mesh, soft glow on brand / primary CTA / KPI heroes; respect `prefers-reduced-motion`.
-4. **Strong interaction** — hover / focus / active / press on every control; sticky elegant tables; skeleton pulse loading; empty states with one CTA.
-5. **One honesty banner always visible** — elegant amber/ice chip in topbar; never hide that this is 演示数据 / Ozon NOT_CONFIGURED.
-6. **Closed-loop offline** — demo adapter covers all view paths; claim → list → order → review → label → ship → inventory → audit works without API.
-7. **Dataset switcher as product control** — topbar segment, not a raw select.
+3. **One accent blue for primary only** — primary CTA / active nav / dataset pill; status tags use muted semantic colors, not neon.
+4. **Breathing atmosphere (restrained)** — ambient aurora dialled down on ops (`is-ops`); brand breathe limited to login CTA, brand mark on dashboard, one KPI hero.
+5. **Strong but adult interaction** — hover / focus / active / press; no toy-like bounce on work tables.
+6. **One honesty banner always visible** — amber chip in topbar; never hide 演示数据 / Ozon NOT_CONFIGURED.
+7. **Closed-loop offline** — demo adapter covers all view paths without Nest API.
+8. **Dataset switcher as product control** — topbar segment, not a raw select.
 
-## Color (exactly 3 brand hues + neutrals)
+## Pro-ops pass (2026-09-28)
+
+Elevated visual craft for a CBEC ops pro at a glance:
+
+| Area | Change |
+|---|---|
+| **Information hierarchy** | Page header = title (20px/650) + meta line + primary action; forms/cards/tables layered; competing glow reduced |
+| **Density** | Table row ~40px, sticky header 36px, tabular-nums, zebra wash, hairline separators; card padding tightened |
+| **State language** | Shared `StatusTag` + `utils/status.ts` — 待审/已审/待发/已发/失败/未配置等 Chinese labels with muted tone tokens |
+| **Chrome restraint** | `.app-shell.is-ops` lowers aurora opacity; sidebar active = flat electric (no bloom); primary btn solid blue (gradient reserved for login/dashboard hero) |
+| **Empty / loading / error** | `OpsEmpty` + `TableSkeleton` on shops/products/listings/orders/shipments/inventory/rules/audit/integrations |
+| **Micro-interaction** | Keep hover/press; remove card lift on ops; queues/KPI keep restrained lift on dashboard only |
+
+Shared components: `components/StatusTag.vue`, `OpsEmpty.vue`, `TableSkeleton.vue`.
+
+## Color (exactly 3 brand hues + neutrals + muted semantics)
 
 | Token | Value | Use |
 |---|---|---|
-| `--ink` / `--bg-shell` | `#0B1220` | Sidebar shell, brand text weight |
-| `--ink-elevated` | `#121A2B` | Sidebar hover wells |
-| `--electric` | `#3B82F6` | Primary actions, links, active glow |
-| `--electric-soft` | `#60A5FA` | Hover / bloom |
-| `--ice` | `#22D3EE` | Gradient tip, breathing highlights |
-| `--ice-mist` | `#93C5FD` | Soft aurora wash |
-| `--bg-page` | `#F4F7FB` | Content canvas |
-| `--bg-surface` | `rgba(255,255,255,0.78)` | Glass cards |
-| `--bg-solid` | `#FFFFFF` | Dense tables / forms |
-| `--border` | `rgba(15, 23, 42, 0.08)` | Hairline |
-| `--border-glow` | `rgba(59, 130, 246, 0.35)` | Hero card edge |
+| `--ink` / `--bg-shell` | `#0B1220` | Sidebar shell |
+| `--ink-elevated` | `#121A2B` | Sidebar wells |
+| `--electric` | `#3B82F6` | Primary actions, links, active |
+| `--electric-soft` | `#60A5FA` | Hover / focus ring |
+| `--ice` | `#22D3EE` | Gradient tip (login/KPI accent only) |
+| `--bg-page` | `#F1F5F9` | Content canvas |
+| `--bg-solid` | `#FFFFFF` | Cards / tables |
+| `--border` | `rgba(15, 23, 42, 0.07)` | Hairline |
 | `--text` | `#0F172A` | Primary copy |
-| `--text-muted` | `#64748B` | Secondary |
-| `--demo-amber` | `#F59E0B` | DEMO honesty chip (semantic, not brand) |
-| `--success` | `#10B981` | Ready / shipped (muted) |
-| `--warn` | `#F59E0B` | Stock risk |
-| `--danger` | `#EF4444` | ETA risk |
+| `--text-muted` | `#64748B` | Secondary / meta |
+| `--demo-amber` | `#F59E0B` | DEMO honesty chip |
+| `--success` | `#059669` | 已发 / 启用 / 正常 |
+| `--warn` / `--pending` | `#D97706` / `#B45309` | 预警 / 待审 / 未配置 |
+| `--danger` | `#DC2626` | 失败 / 阻断 |
+| `--info` | `#0369A1` | 已审 / 就绪 |
 
-Gradients stay intentional: `indigo → electric → ice` only. No rainbow, no cream+terracotta, no acid neon.
+No rainbow, no Inter-only, no bigger neon. Professional = calm confidence + blue accent.
 
 ## Typography
 
-- Latin UI: **Plus Jakarta Sans** (weights 400–700). Fallback: Outfit → system-ui. **Do not use Inter as primary.**
-- Chinese: `"PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif`.
-- Mono IDs / tracking: `ui-monospace, SFMono-Regular, Menlo, Consolas`.
-- Page titles ~22px / 650; KPI values ~28–32px / 700; body 14px.
+- Latin UI: **Plus Jakarta Sans** (400–700). Fallback: system-ui. **Do not use Inter as primary.**
+- Chinese: `"Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif`.
+- Mono IDs / tracking: `ui-monospace, SFMono-Regular, Menlo, Consolas` + tabular-nums.
+- Page titles 20px / 650; KPI ~28px / 700; body 13px; table header 11.5px.
 
 ## Layout
 
-- Sidebar 232px (collapsible): deep ink shell, gradient active pill + soft blue bloom.
-- Glass topbar 60px: honesty chip + product dataset control + user + logout.
-- Content: ambient aurora mesh behind; padding 24px; max readable width optional on forms, full-bleed for tables/KPI.
-- Cards: glass or solid white, 14–16px radius, soft shadow + optional gradient border on heroes.
-- Tables: sticky header, denser row height, row hover wash in electric/8%.
+- Sidebar 224px: deep ink, flat electric active pill (no bloom on ops).
+- Topbar 52px: honesty chip + dataset segment + user.
+- Content padding 18–20px; cards radius 12px; tables dense.
+- Ops pages: solid white cards, quiet aurora; login/dashboard may keep richer glass/aurora.
 
-## Motion & atmosphere (required)
+## Motion (restrained)
 
 | Motion | Spec |
 |---|---|
-| Ambient aurora | Fixed soft radial blobs (blue/cyan/indigo), very low opacity behind content |
-| Breathing glow | `@keyframes breathe` 5s ease-in-out infinite on brand mark, primary CTA, KPI heroes (box-shadow opacity 0.25↔0.55) |
-| Page enter | `fadeRise` 160ms ease-out on route change (opacity + 8px translateY) |
-| Hover lift | Cards/buttons: translateY(-2px) + shadow deepen, 160ms |
-| Press | Primary: scale(0.98) on `:active` |
-| Sidebar active | Gradient pill (`electric → ice`) + blue bloom |
-| Reduced motion | `@media (prefers-reduced-motion: reduce)` → disable infinite breathe; keep short fades optional |
+| Ambient aurora | Low opacity; further reduced under `.is-ops` |
+| Breathing glow | Login CTA + dashboard brand/KPI only; disabled under reduced motion |
+| Page enter | `fadeRise` 140ms |
+| Hover | Buttons translateY(-1px); ops cards do **not** lift |
+| Press | Primary scale(0.98) |
 
-Prefer CSS / Vue `<Transition>`; no Framer Motion / heavy libs.
+## Status map (Chinese)
 
-## Interaction strength
-
-- All controls: clear hover / focus-visible ring (electric soft) / active / disabled opacity.
-- Loading: soft pulse skeleton on KPI strip when fetching; not blank.
-- Empty: icon + short Chinese copy + one primary CTA where relevant.
-- Login: gradient stage + glass card + breathing logo — memorable hero #1.
-- Dashboard: hero KPI strip with gradient borders/glow — memorable hero #2; queue cards clickable with micro-motion.
-- Dataset switcher: segmented product control in topbar.
+| Code | Label | Tone |
+|---|---|---|
+| PENDING_REVIEW | 待审 | pending |
+| APPROVED | 已审 | info |
+| PENDING_PROCUREMENT | 待采 | warn |
+| AWAITING_SHIPMENT | 待发 | accent |
+| SHIPPED | 已发 | success |
+| CANCELLED | 已取消 | neutral |
+| DRAFT / MAPPING / READY / PUBLISHED / FAILED | 草稿 / 映射中 / 就绪 / 已发布 / 失败 | … |
+| NOT_CONFIGURED | 未配置 | warn |
 
 ## Demo datasets
 
 | Key | Name | Intent |
 |---|---|---|
-| `yiwu_cold` | 义乌冷启动 | 少店、少 SKU、待认领/草稿为主，适合走完整闭环 |
-| `guangzhou_mature` | 广州成熟店 | 多 SKU、在售、待审单与库存预警 |
-| `multishop_peak` | 多店峰值 | 多店、超时风险订单、待办队列压力 |
+| `yiwu_cold` | 义乌冷启动 | 少店、少 SKU、待认领/草稿为主 |
+| `guangzhou_mature` | 广州成熟店 | 多 SKU、在售、待审与库存预警 |
+| `multishop_peak` | 多店峰值 | 多店、超时风险、待办压力 |
 
-Integrations always expose Ozon as **NOT_CONFIGURED** with an honesty message.
+Integrations always expose Ozon as **NOT_CONFIGURED**.
 
 ## Build / Pages
 
-- `VITE_DEMO=true` → adapter only (no fetch to Nest).
-- `base` = `/cbec-rfbs-autodelivery/` on Pages; router uses **hash history**.
-- Demo login: `demo@local.dev` / `Demo123!`（亦接受本地 admin 凭据便于熟悉）.
-- Deploy: `gh-pages` branch static dist (Actions workflow optional — OAuth may lack `workflow` scope).
+- `VITE_DEMO=true` → adapter only.
+- `base` = `/cbec-rfbs-autodelivery/` on Pages; router **hash history**.
+- Demo login: `demo@local.dev` / `Demo123!`
+- Deploy: `gh-pages` branch static dist.
 
 ## Self-critique
 
-- Risk of over-animating: keep breathe low-opacity and disable under reduced motion.
-- Glass + aurora can wash contrast — keep text on solid ink/white, never on busy mesh alone.
-- Ops density vs ToC polish: tables stay dense; polish lives in chrome, KPI, login — not in decorative fluff on every row.
-- Honesty chip must remain readable (amber/ice), never camouflaged into brand blue.
+- Ops density vs ToC polish: polish lives in login/dashboard chrome; work pages stay calm and dense.
+- Status tags must stay muted — never compete with the single primary blue.
+- Honesty chip remains amber, never camouflaged into brand blue.
+- Skeletons only on first empty load; subsequent refresh uses Arco table loading.
