@@ -1,9 +1,9 @@
 {
   "phase": "E_local_plus_pages_demo",
-  "status": "github_pages_demo_live_toc_ui",
-  "updated_at": "2026-09-28T04:54:02Z",
+  "status": "github_pages_demo_live_pro_ops_ui",
+  "updated_at": "2026-09-28T16:30:55Z",
   "project_root": "/workspace/project",
-  "code_version": "190b217b889dc3873f37475c6cb5f77ee29fe957",
+  "code_version": "4d3f184a342301ac497afd7a03d4a593cf8ba15b",
   "runtime": {
     "api": "http://127.0.0.1:3200 (NestJS+Prisma+Rules+RBAC+Ozon skeleton)",
     "web": "http://127.0.0.1:3201 (Vue3+Arco, includes /rules)",
@@ -98,21 +98,24 @@
     "http_status": 200,
     "mode": "static_demo_adapter",
     "deploy": "gh-pages branch",
-    "gh_pages_commit": "2dbabc6",
-    "main_commit": "08e7c6d1e0cc9f4804f1e967308ac13a51ba46f0",
+    "gh_pages_commit": "be50efd685927651099a33c728b2242cc69c7899",
+    "main_commit": "4d3f184a342301ac497afd7a03d4a593cf8ba15b",
     "ozon": "NOT_CONFIGURED",
     "demo_login": "demo@local.dev / Demo123!",
     "screenshots": [
       "evidence/pages-demo-login.png",
-      "evidence/pages-demo-dashboard.png"
-    ]
+      "evidence/pages-demo-dashboard.png",
+      "evidence/pages-demo-orders.png",
+      "evidence/pages-demo-products.png"
+    ],
+    "ui": "pro-ops hierarchy/density/status + ToC chrome on login/dashboard"
   },
   "pages": {
     "url": "https://rong001.github.io/cbec-rfbs-autodelivery/",
     "deploy": "gh-pages branch",
-    "gh_pages_sha": "7419f29",
+    "gh_pages_sha": "be50efd",
     "http_status": 200,
-    "ui": "ToC premium indigo/electric/ice",
+    "ui": "pro-ops calm density + muted status language",
     "screenshots": [
       "evidence/pages-demo-login.png",
       "evidence/pages-demo-dashboard.png",
