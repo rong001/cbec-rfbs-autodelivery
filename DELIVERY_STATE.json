@@ -3,7 +3,7 @@
   "status": "local_console_ready_github_pages_demo_authorized",
   "updated_at": "2026-09-28T02:59:23Z",
   "project_root": "/workspace/project",
-  "code_version": "8553136b9a3b68f45a94959cc7977a028eb3f2d4",
+  "code_version": "c5e7fa78a37689bfe21847a9b01410c1997d7471",
   "runtime": {
     "api": "http://127.0.0.1:3200 (NestJS+Prisma+Rules+RBAC+Ozon skeleton)",
     "web": "http://127.0.0.1:3201 (Vue3+Arco, includes /rules)",
