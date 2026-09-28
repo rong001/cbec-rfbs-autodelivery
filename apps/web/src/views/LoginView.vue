@@ -50,14 +50,14 @@ async function onSubmit() {
         </template>
       </p>
       <div v-if="error" class="err-box" style="margin-bottom: 12px">{{ error }}</div>
-      <a-form :model="{}" layout="vertical" @submit.prevent="onSubmit">
+      <a-form :model="{ email, password }" layout="vertical" @keydown.enter.prevent="onSubmit">
         <a-form-item label="邮箱">
           <a-input v-model="email" placeholder="demo@local.dev" allow-clear />
         </a-form-item>
         <a-form-item label="密码">
           <a-input-password v-model="password" placeholder="密码" allow-clear />
         </a-form-item>
-        <a-button type="primary" html-type="submit" long :loading="pending" :disabled="pending">
+        <a-button type="primary" long :loading="pending" :disabled="pending" @click="onSubmit">
           登录
         </a-button>
       </a-form>
